@@ -1,0 +1,26 @@
+#Application Configuration
+server:
+  port: 8080
+  
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+  datasource:
+    url: jdbc:mysql://localhost:3306/pfg_ABB
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: admin
+    password: admin 
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    generate-ddl: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+#    properties:
+#      hibernate:
+
+
+#logging:
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss} ${LOG_LEVEL_PATTERN:-%5p} %m%n"
