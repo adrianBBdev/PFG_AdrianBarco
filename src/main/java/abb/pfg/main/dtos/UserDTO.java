@@ -3,7 +3,7 @@
  */
 package abb.pfg.main.dtos;
 
-import abb.pfg.main.entitys.Role;
+import abb.pfg.main.entities.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

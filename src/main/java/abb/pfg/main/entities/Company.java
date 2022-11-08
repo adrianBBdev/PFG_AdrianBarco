@@ -1,4 +1,4 @@
-package abb.pfg.main.entitys;
+package abb.pfg.main.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,40 +20,34 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Class which represents the student rol in the web app
+ * Class which represents the Company Role in the web app
  * 
  * @author Adrián Barco Barona
  *
  */
 
 @Entity
-@Table(name="tbl_students")
+@Table(name="tbl_companys")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Student {
+public class Company {
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(insertable=false)
-	private Long studentId;
+	private Long companyId;
 	
 	@Column(length=40, nullable=false)
 	private String name;
-	
-	@Column(length=40, nullable=false)
-	private String surname;
 	
 	@Column(length=50, unique=true, nullable=false)
 	@Email
 	private String email;
 	
 	@Column(length=9, unique=true, nullable=false)
-	private String dni;
-	
-	@Column(length=40, nullable=false)
-	private String studies;
+	private String cif;
 	
 	@Column(length=500, nullable=false)
 	private String description;
@@ -62,27 +56,23 @@ public class Student {
 	private byte[] data;*/
 	
 	@OneToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="user_id")
+	@JoinColumn(name="userId")
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	private User user;
 	
 	/**
-	 * Default constructor for Student
+	 * Default constructor for Company
 	 * 
-	 * @param name - name of the student
-	 * @param surname - surname of the student
-	 * @param email - email of the student
-	 * @param dni - DNI of the student
-	 * @param studies - studies of the student
-	 * @param description - description of the student
-	 * @param user - user assigned to the student
+	 * @param name - name of the company
+	 * @param email - email of the company
+	 * @param cif - CIF of the company
+	 * @param description - description of the company
+	 * @param user - user assigned to the company
 	 */
-	public Student(String name, String surname, String email, String dni, String studies, String description, User user) {
+	public Company(String name, String email, String cif, String description, User user) {
 		this.name = name;
-		this.surname = surname;
 		this.email = email;
-		this.dni = dni;
-		this.studies = studies;
+		this.cif = cif;
 		this.description = description;
 		this.user = user;
 	}

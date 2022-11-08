@@ -1,9 +1,9 @@
-package abb.pfg.main.repository;
+package abb.pfg.main.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import abb.pfg.main.entitys.Student;
-import abb.pfg.main.entitys.User;
+import abb.pfg.main.entities.Student;
+import abb.pfg.main.entities.User;
 
 /**
  * JPA repository for students

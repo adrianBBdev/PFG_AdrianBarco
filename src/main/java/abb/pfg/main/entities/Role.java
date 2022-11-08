@@ -1,7 +1,7 @@
 /**
  * 
  */
-package abb.pfg.main.entitys;
+package abb.pfg.main.entities;
 
 /**
  * Enumeration with all possible roles

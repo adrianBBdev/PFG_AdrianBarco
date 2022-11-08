@@ -1,4 +1,4 @@
-package abb.pfg.main.entitys;
+package abb.pfg.main.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

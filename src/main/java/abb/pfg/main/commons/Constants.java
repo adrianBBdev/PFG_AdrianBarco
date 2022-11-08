@@ -21,7 +21,7 @@ public class Constants {
 			public static final String PATH = "/students";
 		}
 		
-		public interface Companys{
+		public interface Companies{
 			public static final String PATH = "/companys";
 		}
 		

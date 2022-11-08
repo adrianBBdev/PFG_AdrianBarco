@@ -8,7 +8,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,11 +20,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import abb.pfg.main.commons.Constants;
-import abb.pfg.main.entitys.Role;
-import abb.pfg.main.entitys.User;
+import abb.pfg.main.entities.Role;
+import abb.pfg.main.entities.User;
 import abb.pfg.main.service.UserService;
 import io.swagger.models.HttpMethod;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,11 +41,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping(value=Constants.Controllers.Users.PATH)
-@Tag(name="UserController", description="Controller to manage users from the web app")
+@Tag(name="UserController", description="Controller to manage the users of the web app")
 public class UserController {
 
+	private final UserService userService;
+	
+	/**
+	 * Default constructor
+	 * 
+	 * @param userService
+	 */
 	@Autowired
-	private UserService userService;
+	public UserController(UserService userService) {
+		this.userService = userService;
+	}
 	
 	/**
 	 * Gets all users
@@ -54,8 +63,10 @@ public class UserController {
 	 * @return List of users
 	 */
 	@Operation(method="GET", description="Gets all users")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)) })
 	@GetMapping(produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<User>> listUsers(@RequestParam(name="role", required = false) Role role){
+	public List<User> listUsers(@RequestParam(name="role", required = false) Role role){
 		log.trace(String.format(Constants.Controllers.Users.PATH, HttpMethod.GET.name()));
 		List<User> users = new ArrayList<>();
 		if(role == null) {
@@ -63,7 +74,7 @@ public class UserController {
 		} else {
 			users = userService.findByRole(role);
 		}
-		return ResponseEntity.ok(users);
+		return users;
 	}
 	
 	/**
@@ -73,11 +84,13 @@ public class UserController {
 	 * @return a user
 	 */
 	@Operation(method="GET", description="Gets a specific user from its id")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Success", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)) })
 	@GetMapping(value="/{id}", produces=MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<User> getUser(@PathVariable("id") Long id) {
+	public User getUser(@PathVariable("id") Long id) {
 		log.trace(String.format(Constants.Controllers.Users.PATH, HttpMethod.GET.name()));
 		User userDB = userService.getUser(id);
-		return ResponseEntity.ok(userDB);
+		return userDB;
 	}
 	
 	/**
@@ -100,7 +113,7 @@ public class UserController {
 	 * @param id - user's id to be updated
 	 * @param user - user's parameters to update
 	 */
-	@Operation(method="PUT", description="Updates an existing user")
+	@Operation(method="PUT", description="Updates an existing user from its id")
 	@ApiResponses(value = { @ApiResponse(responseCode = "200", description = "Ok") })
 	@PutMapping(value="/{id}")
 	public void updateUser(@PathVariable("id") Long id, @RequestBody User user){
@@ -119,8 +132,22 @@ public class UserController {
 	@DeleteMapping(value="/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void deleteUser(@PathVariable("id") Long id){
-		log.trace(String.format(HttpMethod.DELETE.name(), Constants.Controllers.Users.PATH));
+		log.trace(String.format(Constants.Controllers.Users.PATH), HttpMethod.DELETE.name());
 		userService.deleteUser(id);
+	}
+	
+	/**
+	 * Deletes all users of a specific role, or every users if role equals to null
+	 * 
+	 * @param role - user's role 
+	 */
+	@Operation(method="DELETE", description="Deletes all users of a specific role, or every users if role equals to null")
+	@ApiResponses(value = { @ApiResponse(responseCode = "204", description = "No content") })
+	@DeleteMapping(value="/{role}")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void deleteAllUsersByRole(@PathVariable("role") Role role) {
+		log.trace(String.format(Constants.Controllers.Users.PATH, HttpMethod.DELETE.name()));
+		userService.deleteByRole(role);
 	}
 }
 

@@ -1,9 +1,9 @@
-package abb.pfg.main.repository;
+package abb.pfg.main.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import abb.pfg.main.entitys.Company;
-
+import abb.pfg.main.entities.Company;
+import abb.pfg.main.entities.User;
 
 /**
  * JPA repository for companies
@@ -12,5 +12,5 @@ import abb.pfg.main.entitys.Company;
  *
  */
 public interface CompanyRepository extends JpaRepository<Company, Long>{
-	
+	public Company findByUser(User user);
 }	
