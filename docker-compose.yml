@@ -2,29 +2,28 @@ version: '3.7'
 
 services:
 
-  db-mysql:
-    image: mysql
-    hostname: db-mysql
-    container_name: db-mysql
+  db-mariadb:
+    image: mariadb
+    hostname: db-mariadb
+    container_name: db-mariadb
     restart: always
     ports:
       - 3306:3306
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin
-      MYSQL_DATABASE: pfg_ABB
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_USER: admin
+      MARIADB_PASSWORD: admin
+      MARIADB_DATABASE: application_data
     volumes:
       - ./.db:/var/lib/mysql
-    # command: --default-authentication-plugin=mysql_native_password
 
   db-adminer:
     image: adminer
     container_name: db-adminer
     restart: always
     environment:
-      ADMINER_DEFAULT_SERVER: db-mysql
+      ADMINER_DEFAULT_SERVER: db-mariadb
     ports:
       - 9000:8080
     depends_on:
-      - db-mysql
+      - db-mariadb

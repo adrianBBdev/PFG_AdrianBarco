@@ -1,26 +1,28 @@
 #Application Configuration
 server:
   port: 8080
-  
+
 spring:
   mvc:
     pathmatch:
       matching-strategy: ant-path-matcher
   datasource:
-    url: jdbc:mysql://localhost:3306/pfg_ABB
-    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/application_data
+    driver-class-name: org.mariadb.jdbc.Driver
     username: admin
-    password: admin 
+    password: admin
   jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MariaDBDialect
     generate-ddl: false
     show-sql: true
     hibernate:
       ddl-auto: update
-#    properties:
-#      hibernate:
+#   properties:
+#     hibernate:
 
 
-#logging:
+logging:
+  level:
+    '[com.abb.pfg]': debug
 #  pattern:
 #    console: "%d{yyyy-MM-dd HH:mm:ss} ${LOG_LEVEL_PATTERN:-%5p} %m%n"
