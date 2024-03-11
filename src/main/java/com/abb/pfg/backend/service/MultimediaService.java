@@ -16,7 +16,7 @@ import com.abb.pfg.backend.repositories.MultimediaRepository;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Class which represents the multimedia's service
+ * Service associated with the multimedia objects
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -35,8 +35,8 @@ public class MultimediaService{
 	/**
 	 * Finds all multimedia content or filter by owner
 	 * 
-	 * @param id - user's id
-	 * @param pageable - multimedia's pageable
+	 * @param id - user id
+	 * @param pageable - multimedia objects pageable
 	 * @return Page - list of multimedia
 	 */
 	public Page<Multimedia> listAllMultimediaByUser(Long id, Pageable pageable) {

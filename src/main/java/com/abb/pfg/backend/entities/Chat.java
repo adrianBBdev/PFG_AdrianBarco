@@ -18,7 +18,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Class which represents a chat between users in the web app
+ * Entity associated with the chat.
  * 
  * @author Adrian Barco Barona
  * @version 1.0

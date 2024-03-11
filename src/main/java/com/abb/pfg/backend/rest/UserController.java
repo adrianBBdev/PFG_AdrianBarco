@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,12 +33,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Class which represents the users' controller
+ * Controller associated with the user objects
  * 
  * @author Adrian Barco Barona
  * @version 1.0
  *
  */
+@EnableMethodSecurity
 @Slf4j
 @RestController
 @RequestMapping(value=Constants.Controllers.Users.PATH)
@@ -46,6 +49,7 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@Operation(method="GET", description="Gets all users")
 	@ApiResponses(value = 
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
@@ -58,13 +62,13 @@ public class UserController {
 		return pageUser;
 	}
 	
-	@Operation(method="GET", description="Gets a specific user from its email")
+	@Operation(method="GET", description="Gets a specific user from its username")
 	@ApiResponses(value = 
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
 	@GetMapping(value="/user", produces=MediaType.APPLICATION_JSON_VALUE)
-	public UserDto getUserByEmail(@RequestParam(required=true) String email) {
-		log.trace("Call controller method getUser() with params: {}", email);
-		return userService.getUserByEmail(email);
+	public UserDto getUserByUsername(@RequestParam(required=true) String username) {
+		log.trace("Call controller method getUserByUsername() with params: {}", username);
+		return userService.getUserByUsername(username);
 	}
 	
 	@Operation(method="GET", description="Gets a specific user from its id")
@@ -81,7 +85,7 @@ public class UserController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public void createUser(@RequestBody UserDto userDto) {
-		log.trace("Call controller method createUser() with params: {}", userDto.getEmail());
+		log.trace("Call controller method createUser() with params: {}", userDto.getUsername());
 		userService.createUser(userDto);
 	}
 	
@@ -90,7 +94,7 @@ public class UserController {
 	@ApiResponses(value = {@ApiResponse(responseCode="200", description="Success")})
 	@PutMapping
 	public void updateUser(@RequestBody UserDto userDto) {
-		log.trace("Call controller method updateUser() with params: {}", userDto.getEmail());
+		log.trace("Call controller method updateUser() with params: {}", userDto.getUsername());
 		userService.updateUser(userDto);
 	}
 	

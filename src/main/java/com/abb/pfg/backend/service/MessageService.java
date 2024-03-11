@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.abb.pfg.backend.service;
 
 import java.util.List;
@@ -18,7 +15,7 @@ import com.abb.pfg.backend.repositories.MessageRepository;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Class which represents the message's service
+ * Service associated with the messages
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -37,8 +34,8 @@ public class MessageService {
 	/**
 	 * Finds all message content or filter by owner
 	 * 
-	 * @param id - chat's id
-	 * @param pageable - message's pageable
+	 * @param id - chat id
+	 * @param pageable - messages pageable
 	 * @return Page - list of messages
 	 */
 	public Page<Message> listAllMessagesByChat(Long id, Pageable pageable) {
@@ -51,7 +48,7 @@ public class MessageService {
 	/**
 	 * Gets a specific Multimedia from its id
 	 * 
-	 * @param id - multimedia's id
+	 * @param id - multimedia id
 	 * @return MultimediaDto - the requested multimedia
 	 */
 	public MessageDto getMessage(Long id) {

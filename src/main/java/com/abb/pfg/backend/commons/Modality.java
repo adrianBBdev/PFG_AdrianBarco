@@ -1,7 +1,7 @@
 package com.abb.pfg.backend.commons;
 
 /**
- * Enumeration with all possible job offer modalities
+ * All possible modalities for job offers.
  * 
  * @author Adrian Barco Barona
  * @version 1.0

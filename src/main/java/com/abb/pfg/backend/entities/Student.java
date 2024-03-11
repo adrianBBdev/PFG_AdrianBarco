@@ -18,7 +18,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * Class which represents the student rol in the web app
+ * Entity associated with the students
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -58,11 +58,11 @@ public class Student {
 	/**
 	 * Default class constructor
 	 * 
-	 * @param id - student's id
-	 * @param name - student's name
-	 * @param dni - students's dni
+	 * @param id - student id
+	 * @param name - student name
+	 * @param dni - students dni
 	 * @param studies - degree that the student has completed or is finishing
-	 * @param description - stduent's personal description
+	 * @param description - stduent personal description
 	 */
 	public Student(String name, String dni, String studies, String description, User user) {
 		this.name = name;

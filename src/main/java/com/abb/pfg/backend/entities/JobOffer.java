@@ -7,7 +7,6 @@ import java.util.Date;
 
 import javax.validation.constraints.Positive;
 
-import com.abb.pfg.backend.commons.Area;
 import com.abb.pfg.backend.commons.Modality;
 
 import jakarta.persistence.Column;
@@ -25,7 +24,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Class which represents a job offer in the web app
+ * Entity associated with the job offers.
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -57,8 +56,7 @@ public class JobOffer {
 	@Column(nullable=false)
 	private Modality modality;
 	
-	@Enumerated(EnumType.STRING)
-	@Column(nullable=true)
+	@ManyToOne
 	private Area area;
 	
 	@Temporal(TemporalType.DATE)
@@ -87,10 +85,10 @@ public class JobOffer {
 	/**
 	 * Default class constructor
 	 * 
-	 * @param title - job offer's title
-	 * @param description - job offer's description
-	 * @param vacancies - job offer's vacancies
-	 * @param duration - job offer's duration
+	 * @param title - job offer title
+	 * @param description - job offer description
+	 * @param vacancies - job offer vacancies
+	 * @param duration - job offer duration
 	 * @param address - address where the job is offered
 	 * @param city - city where the job is offered
 	 * @param company - company which offers the job

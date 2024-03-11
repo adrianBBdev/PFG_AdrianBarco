@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import com.abb.pfg.backend.entities.Resource;
 
 /**
- * Class which represents the Resource's JPA repository
+ * Resources JPA repository
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -17,6 +17,13 @@ import com.abb.pfg.backend.entities.Resource;
  */
 public interface ResourceRepository extends JpaRepository<Resource,Long>{
 	
+	/**
+	 * Finds all resources from the specified filters
+	 * 
+	 * @param jobOfferId - job offer id
+	 * @param pageable - job offers pageable
+	 * @return Page<Resource> - list of resources
+	 */
 	@Query("SELECT rs FROM Resource rs"
 			+ " WHERE (:jobOfferId IS NULL or rs.jobOffer.id = :jobOfferId)")
 	public Page<Resource> findByJobOffer_Id(@Param("jobOfferId") Long jobOfferId, Pageable pageable);

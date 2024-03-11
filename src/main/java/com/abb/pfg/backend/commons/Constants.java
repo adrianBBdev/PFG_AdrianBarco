@@ -1,7 +1,7 @@
 package com.abb.pfg.backend.commons;
 
 /**
- * Constants class for services.
+ * Constants which defines the paths to the app controllers.
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -10,6 +10,10 @@ package com.abb.pfg.backend.commons;
 public class Constants {
 	
 	public interface Controllers {
+		
+		public interface Authorization{
+			public static final String PATH = "/auth";
+		}
 		
 		public interface Users{
 			public static final String PATH = "/users";
@@ -49,6 +53,10 @@ public class Constants {
 		
 		public interface Resource{
 			public static final String PATH="/resources";
+		}
+		
+		public interface Areas{
+			public static final String PATH="/areas";
 		}
 	}
 

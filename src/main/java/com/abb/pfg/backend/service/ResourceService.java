@@ -15,7 +15,7 @@ import com.abb.pfg.backend.repositories.ResourceRepository;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Class which represents the resource's service
+ * Service associated with the resource objects
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -34,8 +34,8 @@ public class ResourceService {
 	/**
 	 * Finds all resources content or filter by owner
 	 * 
-	 * @param id - user's id
-	 * @param pageable - resource's pageable
+	 * @param id - user id
+	 * @param pageable - resources pageable
 	 * @return Page - list of resources
 	 */
 	public Page<Resource> listAllResourcesByJobOffer(Long id, Pageable pageable) {
@@ -48,7 +48,7 @@ public class ResourceService {
 	/**
 	 * Gets a specific Resource from its id
 	 * 
-	 * @param id - resource's id
+	 * @param id - resource id
 	 * @return ResourceDto - the requested Resource
 	 */
 	public ResourceDto getResource(Long id) {
@@ -120,5 +120,4 @@ public class ResourceService {
 		var resource = modelMapper.map(resourceDto, Resource.class);
 		return resource;
 	}
-	
 }

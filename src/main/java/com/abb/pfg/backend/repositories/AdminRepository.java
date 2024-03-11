@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.abb.pfg.backend.entities.Administrator;
 
 /**
- * Class which represents the administrator's JPA repository
+ * Administrator JPA repository
  * 
  * @author Adrian Barco Barona
  * @version 1.0

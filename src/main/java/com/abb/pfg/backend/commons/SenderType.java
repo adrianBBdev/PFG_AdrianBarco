@@ -4,7 +4,7 @@
 package com.abb.pfg.backend.commons;
 
 /**
- * Enumeration with all possible sender message types
+ * All possible types of message senders.
  * 
  * @author Adrian Barco Barona
  * @version 1.0

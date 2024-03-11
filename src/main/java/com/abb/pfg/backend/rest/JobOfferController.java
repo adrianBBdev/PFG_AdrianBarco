@@ -1,6 +1,5 @@
 package com.abb.pfg.backend.rest;
 
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.abb.pfg.backend.commons.Area;
 import com.abb.pfg.backend.commons.Constants;
 import com.abb.pfg.backend.commons.Modality;
 import com.abb.pfg.backend.dtos.JobOfferDto;
+import com.abb.pfg.backend.entities.Area;
 import com.abb.pfg.backend.entities.JobOffer;
 import com.abb.pfg.backend.service.JobOfferService;
 
@@ -34,7 +33,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Class which represnets the job offers' controller
+ * Controller associated with the job offer objects
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -44,7 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping(value=Constants.Controllers.JobOffers.PATH)
-@Tag(name="JobOfferController", description="Controller to manage the jobOffers of the web app")
+@Tag(name="JobOfferController", description="Controller to manage the job offers of the web app")
 public class JobOfferController {
 	
 	@Autowired
@@ -57,7 +56,7 @@ public class JobOfferController {
 	@GetMapping
 	public Page<JobOffer> getAllJobOffersByCityAndModalityAndAreaAndDurationAndCompany(@RequestParam(required=false) String city, 
 			@RequestParam(required=false) Modality modality, 
-			@RequestParam(required=false) Area area, 
+			@RequestParam(required=false) Area areaId, 
 			@RequestParam(required=false) Integer minDuration, 
 			@RequestParam(required=false) Integer maxDuration,
 			@RequestParam(required=false) Long companyId,
@@ -66,7 +65,7 @@ public class JobOfferController {
 		log.trace("Call controller method getAllJobOffers()");
 		var pageable = PageRequest.of(page, size);
 		var jobOfferPage = jobOfferService.listAllJobOffersByCityAndModalityAndAreaAndDurationAndCompany(city, 
-				modality, area, minDuration, maxDuration, companyId,pageable);
+				modality, areaId, minDuration, maxDuration, companyId,pageable);
 		return jobOfferPage;
 	}
 	

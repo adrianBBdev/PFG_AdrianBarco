@@ -1,6 +1,5 @@
 package com.abb.pfg.backend.service;
 
-
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -9,16 +8,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.abb.pfg.backend.commons.Area;
 import com.abb.pfg.backend.commons.Modality;
 import com.abb.pfg.backend.dtos.JobOfferDto;
+import com.abb.pfg.backend.entities.Area;
 import com.abb.pfg.backend.entities.JobOffer;
 import com.abb.pfg.backend.repositories.JobOfferRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Class which represents
+ * Service associated with the job offers
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -38,21 +37,21 @@ public class JobOfferService{
 	/**
 	 * Gets all job offers or filter by parameters
 	 * 
-	 * @param city - job offers' city
+	 * @param city - job offers city
 	 * @param modality - job offer modality
-	 * @param area - job offers' are
-	 * @param minDuration - job offers' minumin duration
-	 * @param maxDuration - job offers' maximum duration
-	 * @param companyId - company's id
-	 * @param pageable - job offer's pageable
+	 * @param areaId - area id
+	 * @param minDuration - job offer minumin duration
+	 * @param maxDuration - job offer maximum duration
+	 * @param companyId - company id
+	 * @param pageable - job offers pageable
 	 * @return Page - list with the requested job offers
 	 */
 	public Page<JobOffer> listAllJobOffersByCityAndModalityAndAreaAndDurationAndCompany(String city, 
-			Modality modality, Area area, Integer minDuration, 
+			Modality modality, Area areaId, Integer minDuration, 
 			Integer maxDuration, Long companyId,Pageable pageable) {
 		log.trace("Call service method listAllJobOffers()");
 		var jobOffers = jobOfferRepository.findByCityAndModalityAndAreaAndDurationAndCompany_Id(city, modality, 
-				area, minDuration, maxDuration, companyId,pageable); 
+				areaId, minDuration, maxDuration, companyId,pageable); 
 		log.debug("List of job offers found: {}", jobOffers.getNumberOfElements());
 		return jobOffers;
 	}
@@ -60,7 +59,7 @@ public class JobOfferService{
 	/**
 	 * Get the job offer with the requested id
 	 * 
-	 * @param id - job offer's id
+	 * @param id - job offer id
 	 * @return JobOfferDto - the requested chat
 	 */
 	public JobOfferDto getJobOffer(Long id) {

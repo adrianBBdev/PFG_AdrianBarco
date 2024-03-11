@@ -16,7 +16,7 @@ import com.abb.pfg.backend.repositories.RequestRepository;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Class which represents the request's service
+ * Service associated with the requests
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -36,10 +36,10 @@ public class RequestService {
 	/**
 	 * Gets all requests
 	 * 
-	 * @param jobOfferId - job offer's id
-	 * @param studentId - student's id
+	 * @param jobOfferId - job offer id
+	 * @param studentId - student id
 	 * @param requestState - state of the request
-	 * @param pageable - request's pageable
+	 * @param pageable - requests pageable
 	 * @return Page - list of requests
 	 */
 	public Page<Request> listAllRequestsByJobOfferAndStudentAndRequestState(Long jobOfferId, Long studentId, 
@@ -54,7 +54,7 @@ public class RequestService {
 	/**
 	 * Gets the request with the requested id
 	 * 
-	 * @param id - request's id
+	 * @param id - request id
 	 * @return RequestDto - the requested request
 	 */
 	public RequestDto getRequest(Long id) {

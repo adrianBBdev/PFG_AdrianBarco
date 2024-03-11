@@ -14,7 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Class which represents a job offers' resource in the web app 
+ * Entity associated with the resource objects.
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -40,6 +40,14 @@ public class Resource {
 	@ManyToOne
 	private JobOffer jobOffer;
 	
+	/**
+	 * Default class constructor
+	 * 
+	 * @param id - resource id
+	 * @param name - resource name
+	 * @param jobOffer - job offer to which the resource belongs
+	 * @param filePath - path where the resource is stored
+	 */
 	public Resource(Long id, String name, JobOffer jobOffer, String filePath) {
 		this.id = id;
 		this.name = name;

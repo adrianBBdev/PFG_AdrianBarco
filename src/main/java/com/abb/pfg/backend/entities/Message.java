@@ -20,7 +20,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Class which represents the messagest between users in the web app
+ * Entity associated with the messages sent on the chats.
  *  
  * @author Adrian Barco Barona
  * @version 1.0
@@ -52,6 +52,14 @@ public class Message {
 	@ManyToOne
 	private Chat chat;
 	
+	/**
+	 * Default class constructor
+	 * 
+	 * @param content - message content
+	 * @param order - message order within the chat
+	 * @param senderType - type of sender who sends the message
+	 * @param chat - chat to which the message belongs
+	 */
 	public Message (String content, int order, SenderType senderType, Chat chat) {
 		this.content = content;
 		this.orderNumber = order;

@@ -5,7 +5,7 @@ import com.abb.pfg.backend.entities.User;
 import lombok.Data;
 
 /**
- * Class which represents the data transfer object of the Company entity
+ * Data transfer object for the Company entity
  * 
  * @author Adrian Barco Barona
  * @version 1.0

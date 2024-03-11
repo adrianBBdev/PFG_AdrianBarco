@@ -31,7 +31,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Class which represents the admins' controller
+ * Controller associated with the administrator objects
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -84,7 +84,7 @@ public class AdminController {
 		adminService.updateAdmin(adminDto);
 	}
 	
-	@Operation(method="DELETE", description="Deletes a list of selected admins")
+	@Operation(method="DELETE", description="Deletes a list of specified admins")
 	@ApiResponses(value = {@ApiResponse(responseCode="204", description="No content")})
 	@DeleteMapping()
 	@ResponseStatus(HttpStatus.NO_CONTENT)

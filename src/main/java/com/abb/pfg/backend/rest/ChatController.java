@@ -1,6 +1,5 @@
 package com.abb.pfg.backend.rest;
 
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Class which represents the chats' controller
+ * Controller associated with the chat objects
  * 
  * @author Adrian Barco Barona
  * @version 1.0

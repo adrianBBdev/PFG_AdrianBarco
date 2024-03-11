@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * Class which represents the Administrator Role in the web app
+ * Entity associated with the administrator.
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -38,7 +38,7 @@ public class Administrator{
 	/**
 	 * Default class constructor
 	 *
-	 * @param user - admin's user
+	 * @param user - user associated to the administrator
 	 */
 	public Administrator(User user) {
 		this.user = user;

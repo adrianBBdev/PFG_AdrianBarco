@@ -1,6 +1,5 @@
 package com.abb.pfg.backend.service;
 
-
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -16,7 +15,7 @@ import com.abb.pfg.backend.repositories.ChatRepository;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Class which represents the chat's service
+ * Service associated with the chats
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -36,9 +35,9 @@ public class ChatService{
 	/**
 	 * Gets all chats or filter by user
 	 * 
-	 * @param companyId - company's id
-	 * @param studentId - student's id
-	 * @param pageable - chat's pageable
+	 * @param companyId - company id
+	 * @param studentId - student id
+	 * @param pageable - chat pageable
 	 * @return Page - list of chats
 	 */
 	public Page<Chat> listAllChatsByCompanyAndStudent(Long companyId, Long studentId,Pageable pageable){
@@ -51,7 +50,7 @@ public class ChatService{
 	/**
 	 * Gets the chat with the requested id
 	 * 
-	 * @param id - chat's id
+	 * @param id - chat id
 	 * @return ChatDto - the requested chat
 	 */
 	public ChatDto getChat(Long id){

@@ -12,7 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Class which represents the Multimedia Content of each user in the web app
+ * Entity associated with the multimedia objects.
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -45,9 +45,9 @@ public class Multimedia {
 	/**
 	 * Default class constructor
 	 * 
-	 * @param name - multimedia's name file
-	 * @param user - multimedia's owner
-	 * @param filePath - multimedia's file path
+	 * @param name - multimedia name file
+	 * @param user - multimedia owner
+	 * @param filePath - multimedia file path
 	 */
 	public Multimedia(String name, User user, String filePath) {
 		this.name = name;

@@ -5,7 +5,7 @@ import com.abb.pfg.backend.entities.User;
 import lombok.Data;
 
 /**
- * Class which represents the data transfer object of Mutimedia entity
+ * Data transfer object for Mutimedia entity
  * 
  * @author Adrian Barco Barona
  * @version 1.0

@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
- * Class which represents the Company Role in the web app
+ * Entity associated with the companies.
  * 
  * @author Adrián Barco Barona
  * @version 1.0
@@ -56,12 +56,12 @@ public class Company{
 	/**
 	 * Default class constructor
 	 * 
-	 * @param id - company's id
-	 * @param name - company's name
-	 * @param cif - company's cif
-	 * @param country - company's origin country
-	 * @param description - company's description
-	 * @param user - company's user
+	 * @param id - company id
+	 * @param name - company name
+	 * @param cif - company cif
+	 * @param country - company origin country
+	 * @param description - company description
+	 * @param user - user associated with the company
 	 */
 	public Company(String name, String cif, String country, String description, User user) {
 		this.name = name;

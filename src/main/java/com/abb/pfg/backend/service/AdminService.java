@@ -1,6 +1,5 @@
 package com.abb.pfg.backend.service;
 
-
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -16,7 +15,7 @@ import com.abb.pfg.backend.repositories.AdminRepository;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Class which represents the administrator's service
+ * Service associated with the administrator entity
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -48,11 +47,11 @@ public class AdminService {
 	/**
 	 * Gets the admin with the requested id
 	 * 
-	 * @param id - admin's id
+	 * @param id - admin id
 	 * @return AdministratorDtp - the requested admin
 	 */
 	public AdministratorDto getAdmin(Long id) {
-		log.trace("Call service method getChat() with params: {}", id);
+		log.trace("Call service method getArea() with params: {}", id);
 		var optionalAdmin = adminRepository.findById(id);
 		var admin = optionalAdmin.isPresent() ? optionalAdmin.get() : null;
 		log.debug("Admin found: {}", admin.getId());
@@ -103,7 +102,7 @@ public class AdminService {
 	 * Converts an entity into a data transfer object
 	 * 
 	 * @param admin - entity to convert
-	 * @return AdministratorDto - data transfer objetct converted
+	 * @return AdministratorDto - data transfer object converted
 	 */
 	private AdministratorDto convertToDto(Administrator admin) {
 		var adminDto = modelMapper.map(admin, AdministratorDto.class);
@@ -113,7 +112,7 @@ public class AdminService {
 	/**
 	 * Converts a data transfer object into an entity
 	 * 
-	 * @param adminDto - data transfer objetct to convert
+	 * @param adminDto - data transfer object to convert
 	 * @return Administrator - entity converted
 	 */
 	private Administrator convertToEntity(AdministratorDto adminDto) {

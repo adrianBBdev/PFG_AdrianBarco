@@ -30,13 +30,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Class which represents the multimedia files' controller
+ * Controller associated with the multimedia objects
  * 
  * @author Adrian Barco Barona
  * @version 1.0
  *
  */
-//@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_EMPRESA','ROLE_ESTUDIANTE')")
 @Slf4j
 @RestController
 @RequestMapping(value=Constants.Controllers.Multimedia.PATH)

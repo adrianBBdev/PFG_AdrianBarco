@@ -8,7 +8,7 @@ import com.abb.pfg.backend.entities.Chat;
 import lombok.Data;
 
 /**
- * Class which represents the data transfer object of message entity
+ * Data transfer object for message entity
  * 
  * @author Adrian Barco Barona
  * @version 1.0

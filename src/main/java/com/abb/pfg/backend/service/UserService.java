@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.abb.pfg.backend.dtos.UserDto;
@@ -15,7 +16,7 @@ import com.abb.pfg.backend.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 
+ * Service associated with the users
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -31,10 +32,13 @@ public class UserService {
 	@Autowired
 	private UserRepository userRepository;
 	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
 	/**
 	 * Gets all users
 	 * 
-	 * @param pageable - user's pageable
+	 * @param pageable - users pageable
 	 * @return Page - list of users
 	 */
 	public Page<User> listAllUsers(Pageable pageable){
@@ -47,13 +51,13 @@ public class UserService {
 	/**
 	 * Gets a specific user from its id
 	 * 
-	 * @param username - user's username
+	 * @param username - username associated with the user
 	 * @return UserDto - the requested user
 	 */
-	public UserDto getUserByEmail(String email) {
-		log.trace("Call service method getUserByEmail() with params: {email}");
-		var user = userRepository.findByEmail(email);
-		log.debug("User found: {}", user.getEmail());
+	public UserDto getUserByUsername(String username) {
+		log.trace("Call service method getUserByUsername() with params: {username}");
+		var user = userRepository.findByUsername(username);
+		log.debug("User found: {}", user.getUsername());
 		return convertToDto(user);
 	}
 	
@@ -115,7 +119,7 @@ public class UserService {
 	 * Converts an entity into a data transfer object
 	 * 
 	 * @param user - entity to convert
-	 * @return UserDto - data transfer objetct converted
+	 * @return UserDto - data transfer object converted
 	 */
 	private UserDto convertToDto(User user) {
 		var userDto = modelMapper.map(user, UserDto.class);
@@ -125,10 +129,12 @@ public class UserService {
 	/**
 	 * Converts a data transfer object into an entity
 	 * 
-	 * @param userDto - data transfer objetct to convert
+	 * @param userDto - data transfer object to convert
 	 * @return User - entity converted
 	 */
 	private User convertToEntity(UserDto userDto) {
+		String hashPassword = passwordEncoder.encode(userDto.getPassword());
+		userDto.setPassword(hashPassword);
 		var user = modelMapper.map(userDto, User.class);
 		return user;
 	}

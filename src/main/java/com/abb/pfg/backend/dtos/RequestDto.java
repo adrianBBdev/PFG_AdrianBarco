@@ -9,7 +9,7 @@ import com.abb.pfg.backend.entities.Student;
 import lombok.Data;
 
 /**
- * Class which represents the data transfer object of the Request entity
+ * Data transfer object for the Request entity
  * 
  * @author Adrian Barco Barona
  * @version 1.0

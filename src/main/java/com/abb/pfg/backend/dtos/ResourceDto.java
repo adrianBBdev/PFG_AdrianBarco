@@ -5,7 +5,7 @@ import com.abb.pfg.backend.entities.JobOffer;
 import lombok.Data;
 
 /**
- * Class which represents the data transfer objetct of a resource entity
+ * Data transfer object for a Resource entity
  * 
  * @author Adrian Barco Barona
  * @version 1.0

@@ -30,8 +30,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Class which represents the message files' controller
- * 
+ * Controller associated with the message objects
+ *  
  * @author Adrian Barco Barona
  * @version 1.0
  *

@@ -21,7 +21,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Class which represents a request in the web app
+ * Entity associated with the requests
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -49,7 +49,7 @@ public class Request {
 	private Date timeStamp;
 	
 	@Enumerated(EnumType.STRING)
-	@Column(nullable=false)
+	@Column(length=15,nullable=false)
 	private RequestState requestState;
 	
 	@ManyToOne
@@ -60,7 +60,8 @@ public class Request {
 	
 	/**
 	 * Default class constructor
-	 * @param title - request's title
+	 * 
+	 * @param title - request title
 	 * @param content - content of the request
 	 * @param student - student involved in the request
 	 * @param jobOffer - job offer related to the request

@@ -2,6 +2,9 @@
 server:
   port: 8080
 
+authentication:
+  secret-key: "tA9xvUE5XLbktk6wbXRSF5ZLDUoiCdnfacYj96BFkYwG1Ufpp7LJ+bfl2d7jZEssYAm5Hq3tiF2cw3ctU5Nzwg=="
+
 spring:
   mvc:
     pathmatch:
@@ -17,12 +20,18 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-#   properties:
-#     hibernate:
+  security:
+    user:
+      name: admin
+      password: admin
+      roles: ADMIN
 
 
 logging:
   level:
-    '[com.abb.pfg]': debug
+    '[com.abb.pfg]': info
+    '[org.hibernate]' : info
+    '[org.springframework.security]': debug
+    '[org.springframework.web]' : debug
 #  pattern:
 #    console: "%d{yyyy-MM-dd HH:mm:ss} ${LOG_LEVEL_PATTERN:-%5p} %m%n"

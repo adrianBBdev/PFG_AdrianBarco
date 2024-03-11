@@ -5,7 +5,7 @@ import com.abb.pfg.backend.entities.User;
 import lombok.Data;
 
 /**
- * Class which represents the data transfer object of the Administrator entity
+ * Data transfer object for the Administrator entity
  * 
  * @author Adrian Barco Barona
  * @version 1.0

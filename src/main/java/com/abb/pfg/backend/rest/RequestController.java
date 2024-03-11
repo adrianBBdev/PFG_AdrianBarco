@@ -32,7 +32,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Class which represents the requests' controller
+ * Controller associated with the request objects
  * 
  * @author Adrian Barco Barona
  * @version 1.0

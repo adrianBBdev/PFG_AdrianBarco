@@ -15,7 +15,7 @@ import com.abb.pfg.backend.repositories.StudentRepository;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Class which represnts the student's service
+ * Service associated with the students
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -35,7 +35,7 @@ public class StudentService {
 	/**
 	 * Gets all students
 	 * 
-	 * @param pageable - student's pageable
+	 * @param pageable - students pageable
 	 * @return Page - list all students
 	 */
 	public Page<Student>listAllStudentsByNameAndStudiesAndUser(String name, String studies, Long id, Pageable pageable) {
@@ -48,7 +48,7 @@ public class StudentService {
 	/**
 	 * Gets the student with the requested id
 	 * 
-	 * @param id - student's id
+	 * @param id - student id
 	 * @return StudentDto - the requested student
 	 */
 	public StudentDto getStudent(Long id) {
@@ -113,7 +113,7 @@ public class StudentService {
 	/**
 	 * Converts the data transfer object into an entity
 	 * 
-	 * @param studentDto - data transfer objetct to convert
+	 * @param studentDto - data transfer object to convert
 	 * @return Student - entity converted
 	 */
 	private Student convertToEntity(StudentDto studentDto) {

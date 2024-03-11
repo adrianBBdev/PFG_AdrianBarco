@@ -1,6 +1,5 @@
 package com.abb.pfg.backend.service;
 
-
 import java.util.List;
 
 import org.modelmapper.ModelMapper;
@@ -16,7 +15,7 @@ import com.abb.pfg.backend.repositories.CompanyRepository;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Class which represents the company's service
+ * Service associated with the companies
  * 
  * @author Adrian Barco Barona
  * @version 1.0
@@ -49,7 +48,7 @@ public class CompanyService {
 	/**
 	 * Gets the company with the requested id 
 	 * 
-	 * @param id - company's id
+	 * @param id - company id
 	 * @return CompanyDto - the requested company
 	 */
 	public CompanyDto getCompany(Long id) {
@@ -104,7 +103,7 @@ public class CompanyService {
 	 * Converts an entity into a data transfer object
 	 * 
 	 * @param company - company to convert
-	 * @return CompanyDto - data transfer objetct converted
+	 * @return CompanyDto - data transfer object converted
 	 */
 	private CompanyDto convertToDto(Company company) {
 		var companyDto = modelMapper.map(company, CompanyDto.class);
@@ -114,7 +113,7 @@ public class CompanyService {
 	/**
 	 * Converts a data transfer object into an entity
 	 * 
-	 * @param companyDto - data transfer objetct to convert
+	 * @param companyDto - data transfer object to convert
 	 * @return Company - company converted
 	 */
 	private Company convertToEntity(CompanyDto companyDto) {
