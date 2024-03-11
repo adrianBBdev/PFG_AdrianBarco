@@ -61,6 +61,6 @@ public class User {
 		this.username = username;
 		this.password = password;
 		this.role = role;
-		this.enabled = true;	
+		this.enabled = true;
 	}
 }

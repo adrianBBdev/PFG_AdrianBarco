@@ -6,6 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.abb.pfg.backend.commons.Constants;
 import com.abb.pfg.backend.config.JwtUtils;
 import com.abb.pfg.backend.config.LoginResponse;
+import com.abb.pfg.backend.dtos.UserDto;
+import com.abb.pfg.backend.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -39,6 +42,9 @@ public class LoginController {
 	@Autowired
 	AuthenticationManager authenticationManager;
 	
+	@Autowired
+	UserService userService;
+	
 	@Operation(method="POST", description="Log in to an existing user")
 	@ApiResponses(value = {@ApiResponse(responseCode="201", description="Created")})
 	@PostMapping(value="/login")
@@ -47,4 +53,16 @@ public class LoginController {
         var authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
         log.info("Call controller method login() with params: {}, {}", username, password);
         return new LoginResponse(jwtUtils.generateToken(authentication));
-    }}
+    }
+	
+	@Operation(method="POST", description="Signs up a new user")
+	@ApiResponses(value = {@ApiResponse(responseCode="201", description="Created")})
+	@PostMapping(value="/signUp")
+	@ResponseStatus(HttpStatus.CREATED)
+	public void signUp(@RequestBody UserDto userDto) {
+		log.trace("Call controller method signUp with params: {}", userDto.getUsername());
+		userService.createUser(userDto);
+    }
+	
+	
+}

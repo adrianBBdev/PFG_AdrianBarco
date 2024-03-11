@@ -62,6 +62,7 @@ public class UserController {
 		return pageUser;
 	}
 	
+	@PreAuthorize("hasAuthority('ADMIN','STUDENT')")
 	@Operation(method="GET", description="Gets a specific user from its username")
 	@ApiResponses(value = 
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
@@ -71,6 +72,7 @@ public class UserController {
 		return userService.getUserByUsername(username);
 	}
 	
+	@PreAuthorize("hasAnyAuthority('ADMIN','STUDENT')")
 	@Operation(method="GET", description="Gets a specific user from its id")
 	@ApiResponses(value = 
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
@@ -80,6 +82,7 @@ public class UserController {
 		return userService.getUser(id);
 	}
 	
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@Operation(method="POST", description="Creates a new user")
 	@ApiResponses(value = {@ApiResponse(responseCode="202", description="Created")})
 	@PostMapping
@@ -89,7 +92,7 @@ public class UserController {
 		userService.createUser(userDto);
 	}
 	
-	
+	@PreAuthorize("hasAnyAuthority('ADMIN','STUDENT')")
 	@Operation(method="PUT", description="Updates an existing user")
 	@ApiResponses(value = {@ApiResponse(responseCode="200", description="Success")})
 	@PutMapping
@@ -98,6 +101,7 @@ public class UserController {
 		userService.updateUser(userDto);
 	}
 	
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@Operation(method="DELETE", description="Deletes a list of selected users")
 	@ApiResponses(value = {@ApiResponse(responseCode="204", description="No content")})
 	@DeleteMapping
