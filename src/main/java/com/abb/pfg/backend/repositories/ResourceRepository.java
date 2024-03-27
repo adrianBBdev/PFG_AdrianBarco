@@ -10,16 +10,16 @@ import com.abb.pfg.backend.entities.Resource;
 
 /**
  * Resources JPA repository
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
  */
 public interface ResourceRepository extends JpaRepository<Resource,Long>{
-	
+
 	/**
 	 * Finds all resources from the specified filters
-	 * 
+	 *
 	 * @param jobOfferId - job offer id
 	 * @param pageable - job offers pageable
 	 * @return Page<Resource> - list of resources

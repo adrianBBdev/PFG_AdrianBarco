@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service associated with the chats
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -25,16 +25,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class ChatService{
-	
+
 	@Autowired
     private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private ChatRepository chatRepository;
-	
+
 	/**
 	 * Gets all chats or filter by user
-	 * 
+	 *
 	 * @param companyId - company id
 	 * @param studentId - student id
 	 * @param pageable - chat pageable
@@ -49,7 +49,7 @@ public class ChatService{
 
 	/**
 	 * Gets the chat with the requested id
-	 * 
+	 *
 	 * @param id - chat id
 	 * @return ChatDto - the requested chat
 	 */
@@ -63,7 +63,7 @@ public class ChatService{
 
 	/**
 	 * Creates a new chat
-	 * 
+	 *
 	 * @param chatDto - the new chat
 	 */
 	public void createChat(ChatDto chatDto) {
@@ -75,10 +75,10 @@ public class ChatService{
 			log.debug("The chat already exists");
 		}
 	}
-	
+
 	/**
 	 * Updates an existing chat
-	 * 
+	 *
 	 * @param chatDto - the chat that will be updated
 	 */
 	public void updateChat(ChatDto chatDto) {
@@ -90,20 +90,20 @@ public class ChatService{
 			log.debug("The chat does not exist");
 		}
 	}
-	
+
 	/**
 	 * Deletes all provided chats
-	 * 
+	 *
 	 * @param chats - list of chats to delete
 	 */
 	public void deleteChats(List<Chat> chats) {
 		log.trace("Call service method deleteChats() with {} chats", chats.size());
 		chatRepository.deleteAllInBatch(chats);
 	}
-	
+
 	/**
 	 * Converts an entity into a data transfer object
-	 * 
+	 *
 	 * @param chat - entity to convert
 	 * @return ChatDto - data transfer object converted
 	 */
@@ -111,10 +111,10 @@ public class ChatService{
 		var chatDto = modelMapper.map(chat, ChatDto.class);
 		return chatDto;
 	}
-	
+
 	/**
 	 * Converts a data transfer object into an entity
-	 * 
+	 *
 	 * @param chatDto - data transfer object to convert
 	 * @return Chat - entity converted
 	 */

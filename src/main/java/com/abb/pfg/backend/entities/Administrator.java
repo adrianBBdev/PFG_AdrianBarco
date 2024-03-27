@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Entity associated with the administrator.
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -26,15 +26,15 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper=false)
 @NoArgsConstructor
 public class Administrator{
-	
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(insertable=false)
 	private Long id;
-	
+
 	@OneToOne
 	private User user;
-	
+
 	/**
 	 * Default class constructor
 	 *

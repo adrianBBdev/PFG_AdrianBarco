@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service associated with the requests
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -26,34 +26,34 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class RequestService {
-	
+
 	@Autowired
     private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private RequestRepository requestRepository;
-	
+
 	/**
 	 * Gets all requests
-	 * 
+	 *
 	 * @param jobOfferId - job offer id
 	 * @param studentId - student id
 	 * @param requestState - state of the request
 	 * @param pageable - requests pageable
 	 * @return Page - list of requests
 	 */
-	public Page<Request> listAllRequestsByJobOfferAndStudentAndRequestState(Long jobOfferId, Long studentId, 
+	public Page<Request> listAllRequestsByJobOfferAndStudentAndRequestState(Long jobOfferId, Long studentId,
 			RequestState requestState, Pageable pageable) {
 		log.trace("Call service method listAllRequests()");
-		var requestPage = requestRepository.findByJobOffer_IdAndStudent_IdAndRequestState(jobOfferId, 
+		var requestPage = requestRepository.findByJobOffer_IdAndStudent_IdAndRequestState(jobOfferId,
 				studentId, requestState, pageable);
 		log.debug("List of chats found {}", requestPage.getNumberOfElements());
 		return requestPage;
 	}
-	
+
 	/**
 	 * Gets the request with the requested id
-	 * 
+	 *
 	 * @param id - request id
 	 * @return RequestDto - the requested request
 	 */
@@ -64,10 +64,10 @@ public class RequestService {
 		log.debug("Request found: {}", id);
 		return convertToDto(request);
 	}
-	
+
 	/**
 	 * Creates a new request
-	 *  
+	 *
 	 * @param requestDto - the new request
 	 */
 	public void createRequest(RequestDto requestDto) {
@@ -79,10 +79,10 @@ public class RequestService {
 			log.debug("The request already exists");
 		}
 	}
-	
+
 	/**
 	 * Updates an existing request
-	 * 
+	 *
 	 * @param requestDto - request to update
 	 */
 	public void updateRequest(RequestDto requestDto) {
@@ -94,20 +94,20 @@ public class RequestService {
 			log.debug("The request does not exist");
 		}
 	}
-	
+
 	/**
 	 * Deletes all provided requests
-	 * 
+	 *
 	 * @param requests - list of requests to delete
 	 */
 	public void deleteRequests(List<Request> requests) {
 		log.trace("Call service method deleteRequests() with params: {}", requests.size());
 		requestRepository.deleteAllInBatch(requests);
 	}
-	
+
 	/**
 	 * Converts an entity into a data transfer object
-	 * 
+	 *
 	 * @param request - entity to convert
 	 * @return RequestDto - data transfer object converted
 	 */
@@ -115,10 +115,10 @@ public class RequestService {
 		var requestDto = modelMapper.map(request, RequestDto.class);
 		return requestDto;
 	}
-	
+
 	/**
 	 * Converts a data transfer object into an entity
-	 * 
+	 *
 	 * @param requestDto - data transfer object to convert
 	 * @return Request - entity converted
 	 */

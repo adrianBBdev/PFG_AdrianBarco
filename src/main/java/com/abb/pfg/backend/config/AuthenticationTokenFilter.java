@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Security filter to validate the path and authentication token.
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -28,19 +28,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class AuthenticationTokenFilter extends OncePerRequestFilter{
-	
+
 	@Autowired
 	JwtUtils jwtUtils;
-	
+
 	@Autowired
 	CustomUserDetailsService userDetailsService;
-	
+
 	@Override
-	protected void doFilterInternal(HttpServletRequest request, 
-			HttpServletResponse response, 
+	protected void doFilterInternal(HttpServletRequest request,
+			HttpServletResponse response,
 			FilterChain filterChain)
 			throws ServletException, IOException {
-		
+
 		//Validate the path. If /login or /signUp, then it is no authentication
 		if(request.getRequestURI().contains("/auth/")) {
 			filterChain.doFilter(request, response);
@@ -48,15 +48,15 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter{
 		}
 		//Gets the token
 		var token = getTokenFromRequestHeader(request);
-		
+
 		//if validated token, then set authentication
 		if (token == null) {
 			filterChain.doFilter(request, response);
 			return;
         }
-		
+
 		var jwt = jwtUtils.validateAndParseToken(token).getPayload();
-		
+
 		UserDetails userDetails = null;
 		try {
 			userDetails = userDetailsService.loadUserByUsername(jwt.getSubject());
@@ -66,16 +66,16 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter{
 			return;
 		}
 		var auth = new UsernamePasswordAuthenticationToken(
-				userDetails.getUsername(), 
+				userDetails.getUsername(),
 				userDetails.getPassword(),
 				userDetails.getAuthorities());
 		SecurityContextHolder.getContext().setAuthentication(auth);
 		filterChain.doFilter(request, response);
 	}
-	
+
 	/**
 	 * Parses the received http request and extract the bearer token from it.
-	 * 
+	 *
 	 * @param request - Http request to analyze.
 	 * @return String - Token extracted from request.
 	 */

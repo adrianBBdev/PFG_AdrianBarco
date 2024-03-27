@@ -10,16 +10,16 @@ import lombok.NoArgsConstructor;
 
 /**
  * Entity associated with the roles.
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
- * 
+ *
  */
 @Entity
 @NoArgsConstructor
 @Data
 public class Role {
-	
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(insertable=false)
@@ -27,10 +27,10 @@ public class Role {
 
     @Column(nullable = false, unique = true)
     private String name;
-    
+
     /**
      * Default class constrctor
-     * 
+     *
      * @param name - role name
      */
     public Role (String name) {

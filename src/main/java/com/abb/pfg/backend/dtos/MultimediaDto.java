@@ -6,7 +6,7 @@ import lombok.Data;
 
 /**
  * Data transfer object for Mutimedia entity
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *

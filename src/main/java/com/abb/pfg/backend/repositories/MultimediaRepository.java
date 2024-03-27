@@ -10,16 +10,16 @@ import com.abb.pfg.backend.entities.Multimedia;
 
 /**
  * Multimedias JPA repository
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
  */
 public interface MultimediaRepository extends JpaRepository<Multimedia,Long>{
-	
+
 	/**
 	 * Finds all multimedia objects from a specified user
-	 * 
+	 *
 	 * @param id - user id
 	 * @param pageable - multimedia objects pageable
 	 * @return Page - list of multimedia

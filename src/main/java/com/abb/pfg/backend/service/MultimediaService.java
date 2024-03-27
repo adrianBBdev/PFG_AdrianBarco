@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service associated with the multimedia objects
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -28,13 +28,13 @@ public class MultimediaService{
 
 	@Autowired
     private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private MultimediaRepository multimediaRepository;
-	
+
 	/**
 	 * Finds all multimedia content or filter by owner
-	 * 
+	 *
 	 * @param id - user id
 	 * @param pageable - multimedia objects pageable
 	 * @return Page - list of multimedia
@@ -45,10 +45,10 @@ public class MultimediaService{
 		log.debug("List of Multimedia found: {}", multimediaPage.getNumberOfElements());
 		return multimediaPage;
 	}
-	
+
 	/**
 	 * Gets a specific Multimedia from its id
-	 * 
+	 *
 	 * @param id - multimedia's id
 	 * @return MultimediaDto - the requested multimedia
 	 */
@@ -59,10 +59,10 @@ public class MultimediaService{
 		log.debug("Multimedia found: {}", multimedia.getId());
 		return convertToDto(multimedia);
 	}
-	
+
 	/**
 	 * Creates a new multimedia file
-	 * 
+	 *
 	 * @param multimediaDto - the new multimedia file
 	 */
 	public void createMultimedia(MultimediaDto multimediaDto) {
@@ -74,10 +74,10 @@ public class MultimediaService{
 			log.debug("The multimedia file already exists");
 		}
 	}
-	
+
 	/**
 	 * Updates an existing multimedia file
-	 * 
+	 *
 	 * @param multimediaDto - multimedia to update
 	 */
 	public void updateMultimedia(MultimediaDto multimediaDto) {
@@ -89,20 +89,20 @@ public class MultimediaService{
 			log.debug("The multimedia file already exists");
 		}
 	}
-	
+
 	/**
 	 * Deletes a list of multimedia files
-	 * 
+	 *
 	 * @param multimedias - list of multimedia files
 	 */
 	public void deleteMultimedias(List<Multimedia> multimedias) {
 		log.trace("Call service method deleteMultimedias() with params: {}", multimedias.size());
 		multimediaRepository.deleteAllInBatch(multimedias);
 	}
-	
+
 	/**
 	 * Converts an entity into a data transfer object
-	 * 
+	 *
 	 * @param multimedia - entity to convert
 	 * @return MultimediaDto - data transfer object converted
 	 */
@@ -110,10 +110,10 @@ public class MultimediaService{
 		var multimediaDto = modelMapper.map(multimedia, MultimediaDto.class);
 		return multimediaDto;
 	}
-	
+
 	/**
 	 * Converts a data transfer object into an entity
-	 * 
+	 *
 	 * @param multimediaDto - data transfer object to convert
 	 * @return Multimedia - entity converted
 	 */

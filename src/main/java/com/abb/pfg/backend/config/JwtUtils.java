@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service that manipulates tokens for authentication
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -33,10 +33,10 @@ public class JwtUtils {
 
 	@Value(value="${authentication.secret-key}")
 	private String SECRET_KEY;
-	
+
 	/**
 	 * Creates a new token for an app user.
-	 * 
+	 *
 	 * @param authentication - contains the user's authentication information.
 	 * @return String - Token associated with the authenticated user.
 	 */
@@ -51,10 +51,10 @@ public class JwtUtils {
 				.signWith(key)
 				.compact();
 	}
-	
+
 	/**
 	 * Validates and analyzes the token provided as a paramter, in order to authorize the user associated.
-	 * 
+	 *
 	 * @param token - Token to validate.
 	 * @return Jws<Claims> - User data extracted when validating the token.
 	 */

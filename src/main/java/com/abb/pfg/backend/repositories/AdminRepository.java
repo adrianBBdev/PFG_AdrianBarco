@@ -6,7 +6,7 @@ import com.abb.pfg.backend.entities.Administrator;
 
 /**
  * Administrator JPA repository
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *

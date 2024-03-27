@@ -18,10 +18,10 @@ import com.abb.pfg.backend.service.CustomUserDetailsService;
 
 /**
  * Custom Spring security configuration.
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
- * 
+ *
  */
 @EnableWebSecurity
 @Configuration
@@ -29,10 +29,10 @@ public class SecurityConfig {
 
 	@Autowired
 	CustomUserDetailsService customUserDetailsService;
-	
+
 	@Autowired
 	AuthenticationTokenFilter authenticationTokenFilter;
-	
+
 	 @Bean
 	 public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 		 httpSecurity.httpBasic(Customizer.withDefaults());
@@ -45,17 +45,17 @@ public class SecurityConfig {
 		 httpSecurity.addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 		 return httpSecurity.build();
 	 }
-	 
+
 	 @Bean
 	 public AuthenticationManager authenticationManager(CustomUserDetailsService customUserDetailsService,
 			 PasswordEncoder passwordEncoder) {
 		 DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
 		 authenticationProvider.setUserDetailsService(customUserDetailsService);
 		 authenticationProvider.setPasswordEncoder(passwordEncoder);
-		 
+
 		 return new ProviderManager(authenticationProvider);
 	 }
-	 
+
 	 @Bean
 	 public PasswordEncoder passwordEncoder() {
 		 return new BCryptPasswordEncoder();

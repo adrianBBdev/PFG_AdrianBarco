@@ -34,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Controller associated with the user objects
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -45,13 +45,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value=Constants.Controllers.Users.PATH)
 @Tag(name="UserController", description="Controller to manage the users of the web app")
 public class UserController {
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@Operation(method="GET", description="Gets all users")
-	@ApiResponses(value = 
+	@ApiResponses(value =
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
 	@GetMapping(produces=MediaType.APPLICATION_JSON_VALUE)
 	public Page<User> getAllUsers(@RequestParam(defaultValue="0") Integer page, @RequestParam(defaultValue="3") Integer size) {
@@ -61,27 +61,27 @@ public class UserController {
 		log.debug("List of users found: {}", pageUser.getNumberOfElements());
 		return pageUser;
 	}
-	
-	@PreAuthorize("hasAuthority('ADMIN','STUDENT')")
+
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@Operation(method="GET", description="Gets a specific user from its username")
-	@ApiResponses(value = 
+	@ApiResponses(value =
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
 	@GetMapping(value="/user", produces=MediaType.APPLICATION_JSON_VALUE)
 	public UserDto getUserByUsername(@RequestParam(required=true) String username) {
 		log.trace("Call controller method getUserByUsername() with params: {}", username);
 		return userService.getUserByUsername(username);
 	}
-	
-	@PreAuthorize("hasAnyAuthority('ADMIN','STUDENT')")
+
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@Operation(method="GET", description="Gets a specific user from its id")
-	@ApiResponses(value = 
+	@ApiResponses(value =
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
 	@GetMapping(value="/{id}", produces=MediaType.APPLICATION_JSON_VALUE)
 	public UserDto getUser(@PathVariable("id") Long id) {
 		log.trace("Call controller method getUser() with params: {}", id);
 		return userService.getUser(id);
 	}
-	
+
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@Operation(method="POST", description="Creates a new user")
 	@ApiResponses(value = {@ApiResponse(responseCode="202", description="Created")})
@@ -91,7 +91,7 @@ public class UserController {
 		log.trace("Call controller method createUser() with params: {}", userDto.getUsername());
 		userService.createUser(userDto);
 	}
-	
+
 	@PreAuthorize("hasAnyAuthority('ADMIN','STUDENT')")
 	@Operation(method="PUT", description="Updates an existing user")
 	@ApiResponses(value = {@ApiResponse(responseCode="200", description="Success")})
@@ -100,7 +100,7 @@ public class UserController {
 		log.trace("Call controller method updateUser() with params: {}", userDto.getUsername());
 		userService.updateUser(userDto);
 	}
-	
+
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@Operation(method="DELETE", description="Deletes a list of selected users")
 	@ApiResponses(value = {@ApiResponse(responseCode="204", description="No content")})

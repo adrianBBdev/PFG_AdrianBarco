@@ -10,7 +10,7 @@ import lombok.Data;
 
 /**
  * Data transfer object for the Request entity
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *

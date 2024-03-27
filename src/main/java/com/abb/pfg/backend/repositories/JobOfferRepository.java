@@ -12,16 +12,16 @@ import com.abb.pfg.backend.entities.JobOffer;
 
 /**
  * Job offers JPA repository
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
  */
 public interface JobOfferRepository extends JpaRepository<JobOffer,Long>{
-	
+
 	/**
-	 * Finds all job offers with the specified filters 
-	 * 
+	 * Finds all job offers with the specified filters
+	 *
 	 * @param city - location of the job offer
 	 * @param modality - modality of the job offer
 	 * @param areaId - area of the job offer
@@ -37,7 +37,7 @@ public interface JobOfferRepository extends JpaRepository<JobOffer,Long>{
 			+ " AND (:minDuration IS NULL or month(jo.endDate)-month(jo.startDate) >= :minDuration)"
 			+ " AND (:maxDuration IS NULL or month(jo.endDate)-month(jo.startDate) <= :maxDuration)"
 			+ " AND (:companyId IS NULL or jo.company.id = :companyId)")
-	public Page<JobOffer> findByCityAndModalityAndAreaAndDurationAndCompany_Id(@Param("city") String city, 
-			@Param("modality") Modality modality, @Param("area") Area areaId, @Param("minDuration") Integer minDuration, 
+	public Page<JobOffer> findByCityAndModalityAndAreaAndDurationAndCompany_Id(@Param("city") String city,
+			@Param("modality") Modality modality, @Param("area") Area areaId, @Param("minDuration") Integer minDuration,
 			@Param("maxDuration") Integer maxDuration, @Param("companyId") Long companyId, Pageable pageable);
 }

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Entity associated with the multimedia objects.
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -24,27 +24,27 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Multimedia {
-	
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(insertable=false)
-	private Long id; 
-	
+	private Long id;
+
 	@Column(length=20,nullable=false)
 	private String name;
-	
+
 	@ManyToOne
 	private User user;
-	
+
 //	@Column(columnDefinition="mediumblob",nullable=false)
 //	private byte[] file;
-	
+
 	@Column(length=255, nullable=false)
 	private String filePath;
-	
+
 	/**
 	 * Default class constructor
-	 * 
+	 *
 	 * @param name - multimedia name file
 	 * @param user - multimedia owner
 	 * @param filePath - multimedia file path

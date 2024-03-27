@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Controller associated with the area objects
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -42,12 +43,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value=Constants.Controllers.Areas.PATH)
 @Tag(name="AreaController", description="Controller to manage the areas of the web app")
 public class AreaController {
-	
+
 	@Autowired
 	private AreaService areaService;
-	
+
+	@PreAuthorize("hasAnyAuthority('ADMIN','COMPANY','STUDENT')")
 	@Operation(method="GET", description="Gets all aras")
-	@ApiResponses(value = 
+	@ApiResponses(value =
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
 	@GetMapping(produces=MediaType.APPLICATION_JSON_VALUE)
 	public Page<Area> getAllAreas(@RequestParam(defaultValue="0") Integer page, @RequestParam(defaultValue="3") Integer size) {
@@ -57,16 +59,18 @@ public class AreaController {
 		log.debug("List of areas found: ´}", pageArea.getNumberOfElements());
 		return pageArea;
 	}
-	
+
+	@PreAuthorize("hasAnyAuthority('ADMIN','COMPANY','STUDENT')")
 	@Operation(method="GET", description="Gets a specific area from its id")
-	@ApiResponses(value = 
+	@ApiResponses(value =
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
 	@GetMapping(value="/{id}", produces=MediaType.APPLICATION_JSON_VALUE)
 	public AreaDto getArea(@PathVariable("id") Long id) {
 		log.trace("Call controller method getArea() with params: {}", id);
 		return areaService.getArea(id);
 	}
-	
+
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@Operation(method="POST", description="Creates a new area")
 	@ApiResponses(value = {@ApiResponse(responseCode="202", description="Created")})
 	@PostMapping()
@@ -75,7 +79,8 @@ public class AreaController {
 		log.trace("Call controller method createArea() with params: {}", areaDto.getId());
 		areaService.createArea(areaDto);
 	}
-	
+
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@Operation(method="PUT", description="Updates an existing area")
 	@ApiResponses(value = {@ApiResponse(responseCode="200", description="Success")})
 	@PutMapping()
@@ -83,7 +88,8 @@ public class AreaController {
 		log.trace("Call controller mehtod updateArea() with params: {}", areaDto.getId());
 		areaService.updateArea(areaDto);
 	}
-	
+
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@Operation(method="DELETE", description="Deletes a list of specified areas")
 	@ApiResponses(value = {@ApiResponse(responseCode="204", description="No content")})
 	@DeleteMapping()

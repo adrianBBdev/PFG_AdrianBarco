@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Class which represents
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -26,12 +26,12 @@ import lombok.extern.slf4j.Slf4j;
 @RestControllerAdvice
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
-	
+
 	@ExceptionHandler(NullPointerException.class)
 	public ResponseEntity<?> handleNotFoundException(final NullPointerException exception, final HttpServletRequest request) {
 		var guid = UUID.randomUUID().toString();
 		log.error(
-	            String.format("Error GUID=%s; error message: %s", guid, exception.getMessage()), 
+	            String.format("Error GUID=%s; error message: %s", guid, exception.getMessage()),
 	            exception);
 		var response = new CustomErrorResponse(
                 guid,
@@ -43,12 +43,12 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 LocalDateTime.now());
 		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 	}
-	
+
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<?> handleUnknownException(final Exception exception, final HttpServletRequest request) {
 		var guid = UUID.randomUUID().toString();
 		log.error(
-	            String.format("Error GUID=%s; error message: %s", guid, exception.getMessage()), 
+	            String.format("Error GUID=%s; error message: %s", guid, exception.getMessage()),
 	            exception);
 		var response = new CustomErrorResponse(
                 guid,

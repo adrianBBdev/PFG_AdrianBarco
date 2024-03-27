@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 
 /**
  * Class which represents the custom exception of the application
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -18,7 +18,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=true)
 @AllArgsConstructor
 public class CustomException extends RuntimeException{
-	
+
 	private static final long serialVersionUID = -4260991469865498946L;
 	private final String errorCode;
 	private final String message;

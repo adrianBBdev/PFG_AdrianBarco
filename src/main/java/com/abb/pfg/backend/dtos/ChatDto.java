@@ -9,7 +9,7 @@ import lombok.Data;
 
 /**
  * Data transfer object for the Chat entity
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -17,7 +17,7 @@ import lombok.Data;
 
 @Data
 public class ChatDto {
-	
+
 	private Long id;
 	private Date timeStamp;
 	private Company company;

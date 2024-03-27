@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Entity associated with the requests
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -33,41 +33,41 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Request {
-	
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(insertable=false)
 	private Long id;
-	
+
 	@Column(length=20,nullable=false)
 	private String title;
-	
+
 	@Column(length=300,nullable=false)
 	private String content;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeStamp;
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(length=15,nullable=false)
 	private RequestState requestState;
-	
+
 	@ManyToOne
 	private Student student;
-	
+
 	@ManyToOne
 	private JobOffer jobOffer;
-	
+
 	/**
 	 * Default class constructor
-	 * 
+	 *
 	 * @param title - request title
 	 * @param content - content of the request
 	 * @param student - student involved in the request
 	 * @param jobOffer - job offer related to the request
 	 */
 	public Request(String title, String content, Student student, JobOffer jobOffer) {
-		
+
 		this.title = title;
 		this.content = content;
 		this.student = student;

@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Entity associated with the messages sent on the chats.
- *  
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -31,30 +31,30 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Message {
-	
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(insertable=false)
 	private Long id;
-	
+
 	@Column(length=255,nullable=false)
 	private String content;
-	
+
 	@Column(length=20,nullable=false)
 	private int orderNumber;
-	
+
 	@Enumerated(EnumType.STRING)
 	private SenderType senderType;
-	
+
 	@Temporal(TemporalType.DATE)
 	private Date timeStamp;
-	
+
 	@ManyToOne
 	private Chat chat;
-	
+
 	/**
 	 * Default class constructor
-	 * 
+	 *
 	 * @param content - message content
 	 * @param order - message order within the chat
 	 * @param senderType - type of sender who sends the message
@@ -65,8 +65,8 @@ public class Message {
 		this.orderNumber = order;
 		this.senderType = senderType;
 		this.timeStamp = Date.from(Instant.now());
-		
-	
+
+
 	}
 
 }

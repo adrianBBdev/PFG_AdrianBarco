@@ -15,8 +15,8 @@ import com.abb.pfg.backend.repositories.AreaRepository;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Service associated with the area objects 
- * 
+ * Service associated with the area objects
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -24,16 +24,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class AreaService {
-	
+
 	@Autowired
     private ModelMapper modelMapper;
-	
-	@Autowired	
+
+	@Autowired
 	private AreaRepository areaRepository;
-	
+
 	/**
 	 * Gets all areas
-	 * 
+	 *
 	 * @param pageable - pageable of areas
 	 * @return Page - list with the requested areas
 	 */
@@ -43,10 +43,10 @@ public class AreaService {
 		log.debug("List of areas found: {}", areas.getNumberOfElements());
 		return areas;
 	}
-	
+
 	/**
 	 * Gets the area with the requested id
-	 * 
+	 *
 	 * @param id - area id
 	 * @return AreaDtp - the requested area
 	 */
@@ -57,10 +57,10 @@ public class AreaService {
 		log.debug("Area found: {}", area.getId());
 		return convertToDto(area);
 	}
-	
+
 	/**
 	 * Creates a new area
-	 * 
+	 *
 	 * @param areaDto - the new area
 	 */
 	public void createArea(AreaDto areaDto) {
@@ -72,10 +72,10 @@ public class AreaService {
 			log.debug("The area already exists");
 		}
 	}
-	
+
 	/**
 	 * Updates an existing area
-	 * 
+	 *
 	 * @param areaDto - the area that will be updated
 	 */
 	public void updateArea(AreaDto areaDto) {
@@ -87,20 +87,20 @@ public class AreaService {
 			log.debug("The area does not exist");
 		}
 	}
-	
+
 	/**
 	 * Deletes all provided areas
-	 * 
+	 *
 	 * @param area - list of areas to delete
 	 */
 	public void deleteAreas(List<Area> areas) {
 		log.trace("Call service method deleteAreas() with params: {}", areas.size());
 		areaRepository.deleteAllInBatch(areas);
 	}
-	
+
 	/**
 	 * Converts an entity into a data transfer object
-	 * 
+	 *
 	 * @param area - entity to convert
 	 * @return AreaDto - data transfer object converted
 	 */
@@ -108,10 +108,10 @@ public class AreaService {
 		var areaDto = modelMapper.map(area, AreaDto.class);
 		return areaDto;
 	}
-	
+
 	/**
 	 * Converts a data transfer object into an entity
-	 * 
+	 *
 	 * @param areaDto - data transfer object to convert
 	 * @return Area - entity converted
 	 */

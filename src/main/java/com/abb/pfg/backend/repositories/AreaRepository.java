@@ -6,7 +6,7 @@ import com.abb.pfg.backend.entities.Area;
 
 /**
  * Area JPA repository
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *

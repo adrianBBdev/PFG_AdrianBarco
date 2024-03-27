@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,25 +33,27 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Controller associated with the multimedia objects
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
  */
+@EnableMethodSecurity
 @Slf4j
 @RestController
 @RequestMapping(value=Constants.Controllers.Multimedia.PATH)
 @Tag(name="MultimediaController", description="Controller to manage the multimedia files of the web app")
 public class MultimediaController {
-	
+
 	@Autowired
 	private MultimediaService multimediaService;
-	
+
+	@PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','COMPANY')")
 	@Operation(method="GET", description="Gets all multimedia files or filter by parameters")
-	@ApiResponses(value = 
+	@ApiResponses(value =
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
 	@GetMapping
-	public Page<Multimedia> getAllMultimediaByUser(@RequestParam(required=false) Long id, 
+	public Page<Multimedia> getAllMultimediaByUser(@RequestParam(required=false) Long id,
 			@RequestParam(defaultValue="0") int page,
 			@RequestParam(defaultValue="0")Integer size) {
 		log.trace("Call controller method getAllMultimediasByUser()");
@@ -57,15 +61,17 @@ public class MultimediaController {
 		var multimediaPage = multimediaService.listAllMultimediaByUser(id, pageable);
 		return multimediaPage;
 	}
-	
-	@Operation(method="POST", description="Gets an existing multimedia file")
+
+	@PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','COMPANY')")
+	@Operation(method="GET", description="Gets an existing multimedia file")
 	@ApiResponses(value={@ApiResponse(responseCode="201", description="Created")})
 	@GetMapping(value="/{id}")
 	public MultimediaDto getMultimedia(@PathVariable Long id) {
 		log.trace("Call controller method getMultimedia() with params: {}", id);
 		return multimediaService.getMultimedia(id);
 	}
-	
+
+	@PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','COMPANY')")
 	@Operation(method="POST", description="Creates a new multimedia file")
 	@ApiResponses(value={@ApiResponse(responseCode="201", description="Created")})
 	@PostMapping
@@ -74,7 +80,8 @@ public class MultimediaController {
 		log.trace("Call controller method createMultimedia() with params: {}", multimediaDto.getId());
 		multimediaService.createMultimedia(multimediaDto);
 	}
-	
+
+	@PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','COMPANY')")
 	@Operation(method="PUT", description="Updates an existing multimedia file")
 	@ApiResponses(value={@ApiResponse(responseCode="200", description="Success")})
 	@PutMapping
@@ -82,7 +89,8 @@ public class MultimediaController {
 		log.trace("Call controller method updateMultimedia() with params: {}", multimediaDto.getId());
 		multimediaService.updateMultimedia(multimediaDto);
 	}
-	
+
+	@PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','COMPANY')")
 	@Operation(method="DELETE", description="Deletes a list of multimedia files")
 	@ApiResponses(value={@ApiResponse(responseCode="204", description="No content")})
 	@DeleteMapping

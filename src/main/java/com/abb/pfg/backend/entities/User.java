@@ -1,7 +1,6 @@
 package com.abb.pfg.backend.entities;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Size;
 
 //	import com.abb.pfg.backend.commons.Role;
 
@@ -14,21 +13,19 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  * Entity associated with the users.
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
- * 
+ *
  */
 
 @Entity
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class User {
 
@@ -36,23 +33,22 @@ public class User {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(insertable=false)
 	private Long id;
-	
+
 	@Column(length=50,unique=true,nullable=false)
 	@Email
 	private String username;
-	
-	@Column(length=20,nullable=false)
-	@Size(min=12)
+
+	@Column(nullable=false)
 	private String password;
-	
+
 	@OneToOne(fetch = FetchType.EAGER)
 	private Role role;
-	
+
 	private boolean enabled;
-	
+
 	/**
 	 * Default class constructor
-	 * 
+	 *
 	 * @param username - personal username
 	 * @param password - personal password
 	 * @param role - role associated with the user

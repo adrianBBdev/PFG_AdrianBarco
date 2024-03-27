@@ -11,7 +11,7 @@ import lombok.Data;
 
 /**
  * Data transfer object for the JobOffer entity
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -19,7 +19,7 @@ import lombok.Data;
 
 @Data
 public class JobOfferDto {
-	
+
 	private Long id;
 	private String title;
 	private String description;

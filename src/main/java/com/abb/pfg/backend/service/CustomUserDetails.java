@@ -15,24 +15,24 @@ import lombok.AllArgsConstructor;
 
 /**
  * Custom implementation of UserDetails object of Spring Security
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
  */
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
-	
+
 	private static final long serialVersionUID = 2950298448855725867L;
 	private User user;
-	
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Role role = user.getRole();
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-      
+
         authorities.add(new SimpleGrantedAuthority(role.getName()));
-        
+
         return authorities;
 	}
 

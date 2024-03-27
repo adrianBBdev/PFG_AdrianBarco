@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.abb.pfg.backend.entities;
 
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Entity associated with the resource objects.
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -25,24 +25,24 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Resource {
-	
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(insertable=false)
 	private Long id;
-	
+
 	@Column(length=20,nullable=false)
 	private String name;
 
 	@Column(length=255,nullable=false)
 	private String filePath;
-	
+
 	@ManyToOne
 	private JobOffer jobOffer;
-	
+
 	/**
 	 * Default class constructor
-	 * 
+	 *
 	 * @param id - resource id
 	 * @param name - resource name
 	 * @param jobOffer - job offer to which the resource belongs

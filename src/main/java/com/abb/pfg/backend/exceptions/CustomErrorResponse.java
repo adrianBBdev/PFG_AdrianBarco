@@ -6,7 +6,7 @@ import lombok.Data;
 
 /**
  * Class which represents the custom exception format
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -14,7 +14,7 @@ import lombok.Data;
 
 @Data
 public class CustomErrorResponse {
-	
+
 	private final String guid;
 	private final String message;
 	private final Integer statusCode;
@@ -22,5 +22,5 @@ public class CustomErrorResponse {
 	private final String path;
 	private final String method;
 	private final LocalDateTime timestamp;
-	
+
 }

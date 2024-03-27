@@ -9,14 +9,14 @@ import lombok.Data;
 
 /**
  * Data transfer object for message entity
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
  */
 @Data
 public class MessageDto {
-	
+
 	private Long id;
 	private String content;
 	private int order;

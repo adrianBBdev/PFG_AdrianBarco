@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service associated with the resource objects
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -27,13 +27,13 @@ public class ResourceService {
 
 	@Autowired
     private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private ResourceRepository resourceRepository;
-	
+
 	/**
 	 * Finds all resources content or filter by owner
-	 * 
+	 *
 	 * @param id - user id
 	 * @param pageable - resources pageable
 	 * @return Page - list of resources
@@ -44,10 +44,10 @@ public class ResourceService {
 		log.debug("List of resources found: {}", resourcePage.getNumberOfElements());
 		return resourcePage;
 	}
-	
+
 	/**
 	 * Gets a specific Resource from its id
-	 * 
+	 *
 	 * @param id - resource id
 	 * @return ResourceDto - the requested Resource
 	 */
@@ -58,10 +58,10 @@ public class ResourceService {
 		log.debug("Resource found: {}", resource.getId());
 		return convertToDto(resource);
 	}
-	
+
 	/**
 	 * Creates a new resource file
-	 * 
+	 *
 	 * @param resourceDto - the new resource file
 	 */
 	public void createResource(ResourceDto resourceDto) {
@@ -73,10 +73,10 @@ public class ResourceService {
 			log.debug("The resource file already exists");
 		}
 	}
-	
+
 	/**
 	 * Updates an existing resource file
-	 * 
+	 *
 	 * @param resourceDto - resource to update
 	 */
 	public void updateMultimedia(ResourceDto resourceDto) {
@@ -88,20 +88,20 @@ public class ResourceService {
 			log.debug("The resource file does not exist");
 		}
 	}
-	
+
 	/**
 	 * Deletes a list of resource files
-	 * 
+	 *
 	 * @param resources - list of resource files
 	 */
 	public void deleteMultimedias(List<Resource> resources) {
 		log.trace("Call service method deleteResources() with params: {}", resources.size());
 		resourceRepository.deleteAllInBatch(resources);
 	}
-	
+
 	/**
 	 * Converts an entity into a data transfer object
-	 * 
+	 *
 	 * @param resource - entity to convert
 	 * @return ResourceDto - data transfer object converted
 	 */
@@ -109,10 +109,10 @@ public class ResourceService {
 		var resourceDto = modelMapper.map(resource, ResourceDto.class);
 		return resourceDto;
 	}
-	
+
 	/**
 	 * Converts a data transfer object into an entity
-	 * 
+	 *
 	 * @param resourceDto - data transfer object to convert
 	 * @return Resource - entity converted
 	 */

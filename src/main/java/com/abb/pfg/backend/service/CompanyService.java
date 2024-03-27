@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service associated with the companies
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -25,16 +25,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class CompanyService {
-	
+
 	@Autowired
     private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private CompanyRepository companyRepository;
-	
+
 	/**
 	 * Gets all companies
-	 * 
+	 *
 	 * @param pageable pageable of companies
 	 * @return List - list with the requested companies
 	 */
@@ -44,12 +44,12 @@ public class CompanyService {
 		log.debug("List of companies found: {}", pageCompany.getNumberOfElements());
 		return pageCompany;
 	}
-	
+
 	/**
-	 * Gets the company with the requested id 
-	 * 
+	 * Gets the company with the requested id
+	 *
 	 * @param id - company id
-	 * @return CompanyDto - the requested company
+	 * @return CompanyDto - the requested company if exists, or null
 	 */
 	public CompanyDto getCompany(Long id) {
 		log.trace("Call service method getCompany() with params: {}", id);
@@ -58,25 +58,39 @@ public class CompanyService {
 		log.debug("Company found: {}", company.getId());
 		return convertToDto(company);
 	}
-	
+
+	/**
+	 * Gets the company with the requested CIF
+	 *
+	 * @param cif - required CIF of the specified company
+	 * @return CompanyDto - the requested company if exists, or null
+	 */
+	public CompanyDto getCompanyByCif(String cif) {
+		log.trace("Call service method getCompanyByCif() with params: {}", cif);
+		var optionalCompany = companyRepository.findByCif(cif);
+		var company = optionalCompany.isPresent() ? optionalCompany.get() : null;
+		log.debug("Company found: {}", company.getCif());
+		return convertToDto(company);
+	}
+
 	/**
 	 * Creates a new company
-	 * 
+	 *
 	 * @param companyDto - the company that will be created
 	 */
 	public void createCompany(CompanyDto companyDto) {
 		log.trace("Call service method createCompany() with params: {}", companyDto.getId());
-		if(!companyRepository.existsById(companyDto.getId())){
-			log.debug("New company: {}", companyDto.getId());
+		if(!companyRepository.existsByCif(companyDto.getCif())){
+			log.debug("New company: {}", companyDto.getCif());
 			companyRepository.save(convertToEntity(companyDto));
 		} else {
 			log.debug("The company already exists");
 		}
 	}
-	
+
 	/**
 	 * Updates an existing company
-	 * 
+	 *
 	 * @param companyDto - the company that will be updated
 	 */
 	public void updateCompany(CompanyDto companyDto) {
@@ -88,20 +102,20 @@ public class CompanyService {
 			log.debug("The company does not exist");
 		}
 	}
-	
+
 	/**
 	 * Deletes all provided companies
-	 * 
+	 *
 	 * @param companies - list of companies to delete
 	 */
 	public void deleteCompanies(List<Company> companies) {
 		log.trace("Call service method deleteCompanies() with {} companies", companies.size());
 		companyRepository.deleteAllInBatch(companies);
 	}
-	
+
 	/**
 	 * Converts an entity into a data transfer object
-	 * 
+	 *
 	 * @param company - company to convert
 	 * @return CompanyDto - data transfer object converted
 	 */
@@ -109,10 +123,10 @@ public class CompanyService {
 		var companyDto = modelMapper.map(company, CompanyDto.class);
 		return companyDto;
 	}
-	
+
 	/**
 	 * Converts a data transfer object into an entity
-	 * 
+	 *
 	 * @param companyDto - data transfer object to convert
 	 * @return Company - company converted
 	 */

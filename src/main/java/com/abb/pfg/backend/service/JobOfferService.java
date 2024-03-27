@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service associated with the job offers
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -27,16 +27,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class JobOfferService{
-	
+
 	@Autowired
     private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private JobOfferRepository jobOfferRepository;
-	
+
 	/**
 	 * Gets all job offers or filter by parameters
-	 * 
+	 *
 	 * @param city - job offers city
 	 * @param modality - job offer modality
 	 * @param areaId - area id
@@ -46,19 +46,19 @@ public class JobOfferService{
 	 * @param pageable - job offers pageable
 	 * @return Page - list with the requested job offers
 	 */
-	public Page<JobOffer> listAllJobOffersByCityAndModalityAndAreaAndDurationAndCompany(String city, 
-			Modality modality, Area areaId, Integer minDuration, 
+	public Page<JobOffer> listAllJobOffersByCityAndModalityAndAreaAndDurationAndCompany(String city,
+			Modality modality, Area areaId, Integer minDuration,
 			Integer maxDuration, Long companyId,Pageable pageable) {
 		log.trace("Call service method listAllJobOffers()");
-		var jobOffers = jobOfferRepository.findByCityAndModalityAndAreaAndDurationAndCompany_Id(city, modality, 
-				areaId, minDuration, maxDuration, companyId,pageable); 
+		var jobOffers = jobOfferRepository.findByCityAndModalityAndAreaAndDurationAndCompany_Id(city, modality,
+				areaId, minDuration, maxDuration, companyId,pageable);
 		log.debug("List of job offers found: {}", jobOffers.getNumberOfElements());
 		return jobOffers;
 	}
-	
+
 	/**
 	 * Get the job offer with the requested id
-	 * 
+	 *
 	 * @param id - job offer id
 	 * @return JobOfferDto - the requested chat
 	 */
@@ -72,7 +72,7 @@ public class JobOfferService{
 
 	/**
 	 * Creates a new job offer
-	 * 
+	 *
 	 * @param jobOfferDto - the new job offer
 	 */
 	public void createJobOffer(JobOfferDto jobOfferDto) {
@@ -84,10 +84,10 @@ public class JobOfferService{
 			log.debug("The jobOffer already exists");
 		}
 	}
-	
+
 	/**
 	 * Updates an existing job offer
-	 * 
+	 *
 	 * @param jobOfferDto - the job offer that will be updated
 	 */
 	public void updateJobOffer(JobOfferDto jobOfferDto) {
@@ -99,20 +99,20 @@ public class JobOfferService{
 			log.debug("The jobOffer does not exists");
 		}
 	}
-	
+
 	/**
 	 * Deletes all provided job offers
-	 * 
+	 *
 	 * @param jobOffers - list of job offers to delete
 	 */
 	public void deleteJobOffers(List<JobOffer> jobOffers) {
 		log.trace("Call service method deleteJobOffers() with {} job offers", jobOffers.size());
 		jobOfferRepository.deleteAllInBatch(jobOffers);
 	}
-	
+
 	/**
 	 * Converts an entity into a data transfer object
-	 * 
+	 *
 	 * @param jobOffer - entity to convert
 	 * @return JobOfferDto - data transfer object converted
 	 */
@@ -120,10 +120,10 @@ public class JobOfferService{
 		var jobOfferDto = modelMapper.map(jobOffer, JobOfferDto.class);
 		return jobOfferDto;
 	}
-	
+
 	/**
 	 * Converts a data transfer object into an entity
-	 * 
+	 *
 	 * @param jobOfferDto - data transfer object to convert
 	 * @return JobOffer - entity converted
 	 */

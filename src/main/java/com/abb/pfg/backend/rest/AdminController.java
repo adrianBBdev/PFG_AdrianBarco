@@ -7,6 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,22 +34,24 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Controller associated with the administrator objects
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
  */
+@EnableMethodSecurity
 @Slf4j
 @RestController
-@RequestMapping(value=Constants.Controllers.Adminis.PATH)
+@RequestMapping(value=Constants.Controllers.Admins.PATH)
 @Tag(name="AdminsController", description="Controller to manage the admins of the web app")
 public class AdminController {
-	
+
 	@Autowired
 	private AdminService adminService;
-	
+
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@Operation(method="GET", description="Gets all admins")
-	@ApiResponses(value = 
+	@ApiResponses(value =
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
 	@GetMapping(produces=MediaType.APPLICATION_JSON_VALUE)
 	public Page<Administrator> getAllAdmins(@RequestParam(defaultValue="0") Integer page, @RequestParam(defaultValue="3") Integer size) {
@@ -57,16 +61,18 @@ public class AdminController {
 		log.debug("List of admins found: ´}", pageAdmin.getNumberOfElements());
 		return pageAdmin;
 	}
-	
+
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@Operation(method="GET", description="Gets a specific admin from its id")
-	@ApiResponses(value = 
+	@ApiResponses(value =
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
 	@GetMapping(value="/{id}", produces=MediaType.APPLICATION_JSON_VALUE)
 	public AdministratorDto getAdmin(@PathVariable("id") Long id) {
 		log.trace("Call controller method getAdmin() with params: {}", id);
 		return adminService.getAdmin(id);
 	}
-	
+
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@Operation(method="POST", description="Creates a new admin")
 	@ApiResponses(value = {@ApiResponse(responseCode="202", description="Created")})
 	@PostMapping()
@@ -75,7 +81,8 @@ public class AdminController {
 		log.trace("Call controller method createAdmin() with params: {}", adminDto.getId());
 		adminService.createAdmin(adminDto);
 	}
-	
+
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@Operation(method="PUT", description="Updates an existing admin")
 	@ApiResponses(value = {@ApiResponse(responseCode="200", description="Success")})
 	@PutMapping()
@@ -83,7 +90,8 @@ public class AdminController {
 		log.trace("Call controller mehtod updateAdmin() with params: {}", adminDto.getId());
 		adminService.updateAdmin(adminDto);
 	}
-	
+
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@Operation(method="DELETE", description="Deletes a list of specified admins")
 	@ApiResponses(value = {@ApiResponse(responseCode="204", description="No content")})
 	@DeleteMapping()

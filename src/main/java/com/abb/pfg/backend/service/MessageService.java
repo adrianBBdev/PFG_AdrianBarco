@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service associated with the messages
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -24,16 +24,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class MessageService {
-	
+
 	@Autowired
     private ModelMapper modelMapper;
-	
+
 	@Autowired
 	private MessageRepository messageRepository;
-	
+
 	/**
 	 * Finds all message content or filter by owner
-	 * 
+	 *
 	 * @param id - chat id
 	 * @param pageable - messages pageable
 	 * @return Page - list of messages
@@ -44,10 +44,10 @@ public class MessageService {
 		log.debug("List of Message found: {}", multimediaPage.getNumberOfElements());
 		return multimediaPage;
 	}
-	
+
 	/**
 	 * Gets a specific Multimedia from its id
-	 * 
+	 *
 	 * @param id - multimedia id
 	 * @return MultimediaDto - the requested multimedia
 	 */
@@ -58,10 +58,10 @@ public class MessageService {
 		log.debug("Message found: {}", message.getId());
 		return convertToDto(message);
 	}
-	
+
 	/**
 	 * Creates a new message file
-	 * 
+	 *
 	 * @param messageDto - the new message file
 	 */
 	public void createMessage(MessageDto messageDto) {
@@ -73,10 +73,10 @@ public class MessageService {
 			log.debug("The message file already exists");
 		}
 	}
-	
+
 	/**
 	 * Updates an existing messages
-	 *  
+	 *
 	 * @param messageDto - message to update
 	 */
 	public void updateMessage(MessageDto messageDto) {
@@ -88,20 +88,20 @@ public class MessageService {
 			log.debug("The multimedia file already exists");
 		}
 	}
-	
+
 	/**
 	 * Deletes a list of messages
-	 * 
+	 *
 	 * @param messages - list of messages
 	 */
 	public void deleteMessages(List<Message> messages) {
 		log.trace("Call service method deleteMessages() with params: {}", messages.size());
 		messageRepository.deleteAllInBatch(messages);
 	}
-	
+
 	/**
 	 * Converts an entity into a data transfer object
-	 * 
+	 *
 	 * @param message - entity to convert
 	 * @return messageDto - data transfer object converted
 	 */
@@ -109,10 +109,10 @@ public class MessageService {
 		var messageDto = modelMapper.map(message, MessageDto.class);
 		return messageDto;
 	}
-	
+
 	/**
 	 * Converts a data transfer object into an entity
-	 * 
+	 *
 	 * @param messageDto - data transfer object to convert
 	 * @return message - entity converted
 	 */

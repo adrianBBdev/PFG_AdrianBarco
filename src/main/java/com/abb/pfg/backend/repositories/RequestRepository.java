@@ -11,16 +11,16 @@ import com.abb.pfg.backend.entities.Request;
 
 /**
  * Requests JPA repository
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
  */
 public interface RequestRepository extends JpaRepository<Request,Long>{
-	
+
 	/**
 	 * Finds all requests from a specified job offer
-	 * 
+	 *
 	 * @param jobOfferId - job offer id
 	 * @param studentId - student id
 	 * @param requestState - state of the request
@@ -31,8 +31,8 @@ public interface RequestRepository extends JpaRepository<Request,Long>{
 			+ " WHERE (:jobOfferId IS NULL or rq.jobOffer.id = :jobOfferId)"
 			+ " AND (:studentId IS NULL or rq.student.id = :studentId)"
 			+ " AND (:requestState IS NULL or rq.requestState = :requestState)")
-	public Page<Request> findByJobOffer_IdAndStudent_IdAndRequestState(@Param("jobOfferId") Long jobOfferId, 
-			@Param("studentId") Long studentId, 
+	public Page<Request> findByJobOffer_IdAndStudent_IdAndRequestState(@Param("jobOfferId") Long jobOfferId,
+			@Param("studentId") Long studentId,
 			@Param("requestState") RequestState requestState,
 			Pageable pageable);
 }

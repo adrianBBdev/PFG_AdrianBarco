@@ -2,7 +2,7 @@ package com.abb.pfg.backend.commons;
 
 /**
  * All possible security roles for app users.
- * 
+ *
  * @author Adrián Barco Barona
  * @version 1.0
  *

@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Service associated with the students
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -24,17 +24,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 public class StudentService {
-	
+
 	@Autowired
     private ModelMapper modelMapper;
 
-	
+
 	@Autowired
 	private StudentRepository studentRepository;
 
 	/**
 	 * Gets all students
-	 * 
+	 *
 	 * @param pageable - students pageable
 	 * @return Page - list all students
 	 */
@@ -44,10 +44,10 @@ public class StudentService {
 		log.debug("List of students found: {}", pageStudents.getContent().size());
 		return pageStudents;
 	}
-	
+
 	/**
 	 * Gets the student with the requested id
-	 * 
+	 *
 	 * @param id - student id
 	 * @return StudentDto - the requested student
 	 */
@@ -55,28 +55,42 @@ public class StudentService {
 		log.trace("Call service method getStudent() with params: {}", id);
 		var optionalStudent = studentRepository.findById(id);
 		var student = optionalStudent.isPresent() ? optionalStudent.get() : null;
-		log.debug("User found: {}", student.getId());
+		log.debug("Student found: {}", student.getId());
 		return convertToDto(student);
 	}
-	
+
+	/**
+	 * Gets the student with the requested dni
+	 *
+	 * @param dni - student dni
+	 * @return StudentDto - the requested student
+	 */
+	public StudentDto getStudentByDni(String dni) {
+		log.trace("Call service method getStudentByDni() with params: {}", dni);
+		var optionalStudent = studentRepository.findByDni(dni);
+		var student = optionalStudent.isPresent() ? optionalStudent.get() : null;
+		log.debug("Student found: {}", student.getId());
+		return convertToDto(student);
+	}
+
 	/**
 	 * Creates a new student
-	 * 
+	 *
 	 * @param studentDto - student that will be created
 	 */
 	public void createStudent(StudentDto studentDto) {
-		log.trace("Call service method createStudent() with params: {}", studentDto.getId());
-		if(!studentRepository.existsById(studentDto.getId())) {
-			log.debug("New student: {}", studentDto.getId());
+		log.trace("Call service method createStudent() with params: {}", studentDto.getDni());
+		if(!studentRepository.existsByDni(studentDto.getDni())) {
+			log.debug("New student: {}", studentDto.getDni());
 			studentRepository.save(convertToEntity(studentDto));
 		} else {
 			log.debug("The student already exists");
 		}
 	}
-	
+
 	/**
 	 * Updates an existing student
-	 * 
+	 *
 	 * @param studentDto - the student that will be updated
 	 */
 	public void updateStudent(StudentDto studentDto) {
@@ -88,20 +102,20 @@ public class StudentService {
 			log.debug("The student already exists");
 		}
 	}
-	
+
 	/**
 	 * Deletes all provided students
-	 * 
+	 *
 	 * @param students - list of students to delete
 	 */
 	public void deleteStudents(List<Student> students) {
 		log.trace("Call service method deleteStudents() with {} students", students.size());
 		studentRepository.deleteAllInBatch(students);
 	}
-	
+
 	/**
 	 * Converts the entity into a data transfer object
-	 * 
+	 *
 	 * @param student - entity to convert
 	 * @return StudentDto - data transfer object converted
 	 */
@@ -109,10 +123,10 @@ public class StudentService {
 		var studentDto = modelMapper.map(student, StudentDto.class);
 		return studentDto;
 	}
-	
+
 	/**
 	 * Converts the data transfer object into an entity
-	 * 
+	 *
 	 * @param studentDto - data transfer object to convert
 	 * @return Student - entity converted
 	 */

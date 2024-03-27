@@ -10,16 +10,16 @@ import com.abb.pfg.backend.entities.Message;
 
 /**
  * Messages JPA repository
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
  */
 public interface MessageRepository extends JpaRepository<Message,Long>{
-	
+
 	/**
 	 * Finds all messages from a specified chat
-	 * 
+	 *
 	 * @param chat - chat id
 	 * @param pageable - messages pageable
 	 * @return Page - list of messages

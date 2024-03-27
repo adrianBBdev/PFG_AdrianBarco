@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Entity associated with the job offers.
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -36,55 +36,55 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class JobOffer {
-	
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(insertable=false)
 	private Long id;
-	
+
 	@Column(length=40, nullable=false)
 	private String title;
-	
+
 	@Column(length=500, nullable=false)
 	private String description;
-	
+
 	@Positive
 	@Column(nullable=false)
 	private int vacancies;		//Number of vacancies
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(nullable=false)
 	private Modality modality;
-	
+
 	@ManyToOne
 	private Area area;
-	
+
 	@Temporal(TemporalType.DATE)
 	@Column(nullable=false)
 	private LocalDate startDate;
-	
+
 	@Temporal(TemporalType.DATE)
 	@Column(nullable=false)
 	private LocalDate endDate;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timeStamp;
-	
+
 	@Column(length=30,nullable=false)
 	private String address;
-	
+
 	@Column(length=20,nullable=false)
 	private String city;
-	
+
 	@Column(columnDefinition="tinyint(1) default 1")
 	private boolean state;  //1 is open, 0 is closed
-	
+
 	@ManyToOne
 	private Company company;
-	
+
 	/**
 	 * Default class constructor
-	 * 
+	 *
 	 * @param title - job offer title
 	 * @param description - job offer description
 	 * @param vacancies - job offer vacancies
@@ -93,7 +93,7 @@ public class JobOffer {
 	 * @param city - city where the job is offered
 	 * @param company - company which offers the job
 	 */
-	public JobOffer(String title, String description, int vacancies, LocalDate startDate, LocalDate endDate, 
+	public JobOffer(String title, String description, int vacancies, LocalDate startDate, LocalDate endDate,
 			Modality modality, Area area, String address, String city, Company company) {
 		this.title = title;
 		this.description = description;

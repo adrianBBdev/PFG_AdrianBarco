@@ -9,17 +9,17 @@ import org.springframework.data.repository.query.Param;
 import com.abb.pfg.backend.entities.Chat;
 
 /**
- * Chat JPA repository 
- * 
+ * Chat JPA repository
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
  */
 public interface ChatRepository extends JpaRepository<Chat,Long>{
-	
+
 	/**
 	 * Finds all chats from a specified student
-	 * 
+	 *
 	 * @param compayId - company id
 	 * @param studentId - student id
 	 * @param pageable - chat pageable

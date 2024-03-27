@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Entity associated with the chat.
- * 
+ *
  * @author Adrian Barco Barona
  * @version 1.0
  *
@@ -35,19 +35,19 @@ public class Chat {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(insertable=false)
 	private Long id;
-	
+
 	@Temporal(TemporalType.DATE)
 	private Date timeStamp;
-	
+
 	@ManyToOne
 	private Company company;
-	
+
 	@ManyToOne
 	private Student student;
-	
+
 	/**
 	 * Default class constructor
-	 * 
+	 *
 	 * @param company - company involved in the chat
 	 * @param student - student involved in the chat
 	 */
