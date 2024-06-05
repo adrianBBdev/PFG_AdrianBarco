@@ -25,6 +25,7 @@ public interface MultimediaRepository extends JpaRepository<Multimedia,Long>{
 	 * @return Page - list of multimedia
 	 */
 	@Query("SELECT mt FROM Multimedia mt"
-			+ " WHERE (:userId IS NULL or mt.user.id = :userId)")
-	public Page<Multimedia> findByUser_Id(@Param("userId") Long userId, Pageable pageable);
+			+ " WHERE (:username IS NULL or mt.user.username = :username)"
+			+ " AND (:name IS NULL or mt.name LIKE %:name%)")
+	public Page<Multimedia> findByUserAndName(@Param("name") String name, @Param("username") String username, Pageable pageable);
 }

@@ -4,6 +4,7 @@ package com.abb.pfg.backend.entities;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,7 +37,7 @@ public class Company{
 	private Long id;
 
 	@NotBlank(message="El nombre no puede estar vacío")
-	@Column(length=50,nullable=false,unique=true)
+	@Column(length=100,nullable=false,unique=true)
 	private String name;
 
 	@Pattern(regexp ="[A-Za-z0-9]{9}",message="El CIF debe tener 9 caracteres alfanuméricos")
@@ -44,16 +45,16 @@ public class Company{
 	private String cif;
 
 	@NotBlank(message="El país no puede estar vacío")
-	@Column(length=20,nullable=false)
+	@Column(length=50,nullable=false)
 	private String country;
 
-	@Column(length=255,nullable=true)
+	@Column(length=500,nullable=true)
 	private String description;
 	
-	@Column(length=255,nullable=true)
-	private String logo;
+	@Column(length=100,nullable=true)
+	private String profilePicture;
 
-	@OneToOne
+	@OneToOne(cascade=CascadeType.REMOVE)
 	private User user;
 
 	/**
@@ -65,12 +66,12 @@ public class Company{
 	 * @param description - company description
 	 * @param user - user associated with the company
 	 */
-	public Company(String name, String cif, String country, String description, String logo,User user) {
+	public Company(String name, String cif, String country, String description, String profilePicture,User user) {
 		this.name = name;
 		this.cif = cif;
 		this.country = country;
 		this.description = description;
-		this.logo = logo;
+		this.profilePicture = profilePicture;
 		this.user = user;
 	}
 }

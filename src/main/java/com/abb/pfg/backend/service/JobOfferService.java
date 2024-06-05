@@ -1,7 +1,5 @@
 package com.abb.pfg.backend.service;
 
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,11 +7,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.abb.pfg.backend.commons.Modality;
+import com.abb.pfg.backend.config.JobOfferCreationDto;
+import com.abb.pfg.backend.dtos.AreaDto;
+import com.abb.pfg.backend.dtos.CompanyDto;
 import com.abb.pfg.backend.dtos.JobOfferDto;
-import com.abb.pfg.backend.entities.Area;
 import com.abb.pfg.backend.entities.JobOffer;
 import com.abb.pfg.backend.repositories.JobOfferRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -33,6 +34,12 @@ public class JobOfferService{
 
 	@Autowired
 	private JobOfferRepository jobOfferRepository;
+	
+	@Autowired
+	private CompanyService companyService;
+	
+	@Autowired
+	private AreaService areaService;
 
 	/**
 	 * Gets all job offers or filter by parameters
@@ -47,26 +54,22 @@ public class JobOfferService{
 	 * @return Page - list with the requested job offers
 	 */
 	public Page<JobOffer> listAllJobOffersByCityAndModalityAndAreaAndDurationAndCompany(String city,
-			Modality modality, Area areaId, Integer minDuration,
-			Integer maxDuration, Long companyId,Pageable pageable) {
-		log.trace("Call service method listAllJobOffers()");
-		var jobOffers = jobOfferRepository.findByCityAndModalityAndAreaAndDurationAndCompany_Id(city, modality,
-				areaId, minDuration, maxDuration, companyId,pageable);
-		log.debug("List of job offers found: {}", jobOffers.getNumberOfElements());
+			Modality modality, String area, Integer minDuration,
+			Integer maxDuration, String companyId, String name, Pageable pageable) {
+		var jobOffers = jobOfferRepository.findByCityAndModalityAndArea_IdAndDurationAndCompany_Id(city, modality,
+				area, minDuration, maxDuration, companyId, name,pageable);
 		return jobOffers;
 	}
-
+	
 	/**
-	 * Get the job offer with the requested id
+	 * Get the job offer with the requested offerCode
 	 *
-	 * @param id - job offer id
-	 * @return JobOfferDto - the requested chat
+	 * @param offerCode - job offer offerCode
+	 * @return JobOfferDto - the requested job offer
 	 */
-	public JobOfferDto getJobOffer(Long id) {
-		log.trace("Call service method getJobOffer() with params: {}", id);
+	public JobOfferDto getJobOfferById(Long id) {
 		var optionalJobOffer = jobOfferRepository.findById(id);
 		var jobOffer = optionalJobOffer.isPresent() ? optionalJobOffer.get() : null;
-		log.debug("Job offer found: {}", jobOffer.getId());
 		return convertToDto(jobOffer);
 	}
 
@@ -75,14 +78,36 @@ public class JobOfferService{
 	 *
 	 * @param jobOfferDto - the new job offer
 	 */
-	public void createJobOffer(JobOfferDto jobOfferDto) {
-		log.trace("Call service method createJobOffer() with params: {}", jobOfferDto.getId());
-		if(!jobOfferRepository.existsById(jobOfferDto.getId())) {
-			log.debug("New jobOffer: {}", jobOfferDto.getId());
-			jobOfferRepository.save(convertToEntity(jobOfferDto));
-		} else {
-			log.debug("The jobOffer already exists");
-		}
+	@Transactional
+	public void createJobOffer(JobOfferCreationDto jobOfferCreationDto) {
+		var companyDto = companyService.getCompanyByUsernameAndCif(jobOfferCreationDto.getCompany(), null);
+		var areaDto = areaService.getArea(jobOfferCreationDto.getAreaName());
+		var jobOfferDto = setJobOfferDto(jobOfferCreationDto, companyDto, areaDto);
+		jobOfferRepository.save(convertToEntity(jobOfferDto));
+	}
+	
+	/**
+	 * Sets the job offer dto to save it
+	 * 
+	 * @param jobOfferCreationDto - dto used to create the offer
+	 * @param companyDto - job offer's company
+	 * @param areaDto - job offer's area
+	 * @return JobOfferDto - job offer's dto
+	 */
+	private JobOfferDto setJobOfferDto(JobOfferCreationDto jobOfferCreationDto, CompanyDto companyDto, AreaDto areaDto) {
+		var jobOfferDto = new JobOfferDto();
+		jobOfferDto.setArea(areaService.convertToEntity(areaDto));
+		jobOfferDto.setAddress(jobOfferCreationDto.getAddress());
+		jobOfferDto.setCity(jobOfferCreationDto.getCity());
+		jobOfferDto.setCompany(companyService.convertToEntity(companyDto));
+		jobOfferDto.setDescription(jobOfferCreationDto.getDescription());
+		jobOfferDto.setEndDate(jobOfferCreationDto.getEndDate());
+		jobOfferDto.setStartDate(jobOfferCreationDto.getStartDate());
+		jobOfferDto.setModality(jobOfferCreationDto.getModality());
+		jobOfferDto.setTitle(jobOfferCreationDto.getTitle());
+		jobOfferDto.setSalary(jobOfferCreationDto.getSalary());
+		jobOfferDto.setVacancies(jobOfferCreationDto.getVacancies());
+		return jobOfferDto;
 	}
 
 	/**
@@ -91,13 +116,11 @@ public class JobOfferService{
 	 * @param jobOfferDto - the job offer that will be updated
 	 */
 	public void updateJobOffer(JobOfferDto jobOfferDto) {
-		log.trace("Call service method updateJobOffer() with params: {}", jobOfferDto.getId());
 		if(jobOfferRepository.existsById(jobOfferDto.getId())) {
-			log.debug("JobOffer updated: {}", jobOfferDto.getId());
 			jobOfferRepository.save(convertToEntity(jobOfferDto));
-		} else {
-			log.debug("The jobOffer does not exists");
+			return;
 		}
+		log.debug("The jobOffer does not exists");
 	}
 
 	/**
@@ -105,9 +128,8 @@ public class JobOfferService{
 	 *
 	 * @param jobOffers - list of job offers to delete
 	 */
-	public void deleteJobOffers(List<JobOffer> jobOffers) {
-		log.trace("Call service method deleteJobOffers() with {} job offers", jobOffers.size());
-		jobOfferRepository.deleteAllInBatch(jobOffers);
+	public void deleteJobOffers(Long id) {
+		jobOfferRepository.deleteById(id);
 	}
 
 	/**
@@ -117,8 +139,11 @@ public class JobOfferService{
 	 * @return JobOfferDto - data transfer object converted
 	 */
 	private JobOfferDto convertToDto(JobOffer jobOffer) {
-		var jobOfferDto = modelMapper.map(jobOffer, JobOfferDto.class);
-		return jobOfferDto;
+		try {
+			return modelMapper.map(jobOffer, JobOfferDto.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 
 	/**
@@ -127,8 +152,11 @@ public class JobOfferService{
 	 * @param jobOfferDto - data transfer object to convert
 	 * @return JobOffer - entity converted
 	 */
-	private JobOffer convertToEntity(JobOfferDto jobOfferDto) {
-		var jobOffer = modelMapper.map(jobOfferDto, JobOffer.class);
-		return jobOffer;
+	public JobOffer convertToEntity(JobOfferDto jobOfferDto) {
+		try {
+			return modelMapper.map(jobOfferDto, JobOffer.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 }

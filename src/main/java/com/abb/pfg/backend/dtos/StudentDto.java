@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class StudentDto {
-
 	private Long id;
 	private String name;
 	private String dni;
@@ -25,14 +24,4 @@ public class StudentDto {
 	private String phoneNumber;
 	private String profilePicture;
 	private User user;
-
-	public StudentDto(String name, String dni, String studies, String description, String phoneNumber, String profilePicture,User user) {
-		this.name = name;
-		this.dni = dni;
-		this.studies = studies;
-		this.description = description;
-		this.phoneNumber = phoneNumber;
-		this.profilePicture = profilePicture;
-		this.user = user;
-	}
 }

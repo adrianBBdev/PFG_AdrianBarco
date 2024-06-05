@@ -1,7 +1,5 @@
 package com.abb.pfg.backend.service;
 
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,25 +37,26 @@ public class StudentService {
 	 * @return Page - list all students
 	 */
 	public Page<Student>listAllStudentsByNameAndStudiesAndUser(String name, String studies, Long id, Pageable pageable) {
-		log.trace("Call service method listAllStudentsByNameAndStudiesAndUser()");
 		var pageStudents = studentRepository.findByNameAndStudiesAndUser_Id(name, studies, id, pageable);
-		log.debug("List of students found: {}", pageStudents.getContent().size());
 		return pageStudents;
 	}
-
+	
 	/**
-	 * Gets the student with the requested id
+	 * Gets the student with the requested username
 	 *
-	 * @param id - student id
+	 * @param username - student username
+	 * @param dni - student's dni
 	 * @return StudentDto - the requested student
 	 */
-	public StudentDto getStudent(Long id) {
-		log.trace("Call service method getStudent() with params: {}", id);
-		var optionalStudent = studentRepository.findById(id);
+	public StudentDto getStudentByUsernameAndDni(String username, String dni) {
+		if(username == null) {
+			return getStudentByDni(dni);
+		}
+		var optionalStudent = studentRepository.findByUsername(username);
 		var student = optionalStudent.isPresent() ? optionalStudent.get() : null;
-		log.debug("Student found: {}", student.getId());
 		return convertToDto(student);
 	}
+	
 
 	/**
 	 * Gets the student with the requested dni
@@ -66,10 +65,8 @@ public class StudentService {
 	 * @return StudentDto - the requested student
 	 */
 	public StudentDto getStudentByDni(String dni) {
-		log.trace("Call service method getStudentByDni() with params: {}", dni);
 		var optionalStudent = studentRepository.findByDni(dni);
 		var student = optionalStudent.isPresent() ? optionalStudent.get() : null;
-		log.debug("Student found: {}", student.getId());
 		return convertToDto(student);
 	}
 
@@ -79,13 +76,11 @@ public class StudentService {
 	 * @param studentDto - student that will be created
 	 */
 	public void createStudent(StudentDto studentDto) {
-		log.trace("Call service method createStudent() with params: {}", studentDto.getDni());
 		if(!studentRepository.existsByDni(studentDto.getDni())) {
-			log.debug("New student: {}", studentDto.getDni());
 			studentRepository.save(convertToEntity(studentDto));
-		} else {
-			log.debug("The student already exists");
+			return;
 		}
+		log.debug("The student already exists");
 	}
 
 	/**
@@ -94,13 +89,11 @@ public class StudentService {
 	 * @param studentDto - the student that will be updated
 	 */
 	public void updateStudent(StudentDto studentDto) {
-		log.trace("Call service method updateStudent() with params: {}", studentDto.getId());
-		if(studentRepository.existsById(studentDto.getId())) {
-			log.debug("New student: {}", studentDto.getId());
+		if(studentRepository.existsByDni(studentDto.getDni())) {
 			studentRepository.save(convertToEntity(studentDto));
-		} else {
-			log.debug("The student already exists");
+			return;
 		}
+		log.debug("The student does not exist");
 	}
 
 	/**
@@ -108,9 +101,9 @@ public class StudentService {
 	 *
 	 * @param students - list of students to delete
 	 */
-	public void deleteStudents(List<Student> students) {
-		log.trace("Call service method deleteStudents() with {} students", students.size());
-		studentRepository.deleteAllInBatch(students);
+	public void deleteStudent(String username) {
+		var user = studentRepository.findByUsername(username).get().getUser();
+		studentRepository.deleteByUser(user);
 	}
 
 	/**
@@ -120,8 +113,11 @@ public class StudentService {
 	 * @return StudentDto - data transfer object converted
 	 */
 	private StudentDto convertToDto(Student student) {
-		var studentDto = modelMapper.map(student, StudentDto.class);
-		return studentDto;
+		try {
+			return modelMapper.map(student, StudentDto.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 
 	/**
@@ -130,8 +126,11 @@ public class StudentService {
 	 * @param studentDto - data transfer object to convert
 	 * @return Student - entity converted
 	 */
-	private Student convertToEntity(StudentDto studentDto) {
-		var student = modelMapper.map(studentDto, Student.class);
-		return student;
+	public Student convertToEntity(StudentDto studentDto) {
+		try {
+			return modelMapper.map(studentDto, Student.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 }

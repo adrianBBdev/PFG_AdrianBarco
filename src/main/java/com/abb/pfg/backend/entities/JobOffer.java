@@ -7,6 +7,10 @@ import java.util.Date;
 
 import javax.validation.constraints.Positive;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.abb.pfg.backend.commons.Modality;
 
 import jakarta.persistence.Column;
@@ -42,7 +46,7 @@ public class JobOffer {
 	@Column(insertable=false)
 	private Long id;
 
-	@Column(length=40, nullable=false)
+	@Column(length=50, nullable=false)
 	private String title;
 
 	@Column(length=500, nullable=false)
@@ -51,6 +55,10 @@ public class JobOffer {
 	@Positive
 	@Column(nullable=false)
 	private int vacancies;		//Number of vacancies
+	
+	@Positive
+	@Column(nullable=false)
+	private double salary;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable=false)
@@ -63,23 +71,25 @@ public class JobOffer {
 	@Column(nullable=false)
 	private LocalDate startDate;
 
-	@Temporal(TemporalType.DATE)
-	@Column(nullable=false)
+	@Column(nullable=false,columnDefinition="DATE")
+	@DateTimeFormat(pattern="dd-MM-yyyy")
 	private LocalDate endDate;
 
 	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern="dd-MM-yyyy HH:mm:ss")
 	private Date timeStamp;
 
-	@Column(length=30,nullable=false)
+	@Column(length=100,nullable=false)
 	private String address;
 
-	@Column(length=20,nullable=false)
+	@Column(length=50,nullable=false)
 	private String city;
 
 	@Column(columnDefinition="tinyint(1) default 1")
-	private boolean state;  //1 is open, 0 is closed
+	private boolean status;  //1 is open, 0 is closed
 
 	@ManyToOne
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Company company;
 
 	/**
@@ -93,11 +103,12 @@ public class JobOffer {
 	 * @param city - city where the job is offered
 	 * @param company - company which offers the job
 	 */
-	public JobOffer(String title, String description, int vacancies, LocalDate startDate, LocalDate endDate,
+	public JobOffer(String title, String description, int vacancies, double salary,LocalDate startDate, LocalDate endDate,
 			Modality modality, Area area, String address, String city, Company company) {
 		this.title = title;
 		this.description = description;
 		this.vacancies = vacancies;
+		this.salary = salary;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.modality = modality;
@@ -105,7 +116,7 @@ public class JobOffer {
 		this.timeStamp = Date.from(Instant.now());
 		this.address = address;
 		this.city = city;
-		this.state = true;
+		this.status = true;
 		this.company = company;
 	}
 }

@@ -58,6 +58,10 @@ public class Constants {
 		public interface Areas{
 			public static final String PATH="/areas";
 		}
+		
+		public interface Favorites{
+			public static final String PATH="/favorites";
+		}
 	}
 
 }

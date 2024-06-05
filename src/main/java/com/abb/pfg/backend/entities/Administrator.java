@@ -1,6 +1,7 @@
 package com.abb.pfg.backend.entities;
 
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,7 +33,7 @@ public class Administrator{
 	@Column(insertable=false)
 	private Long id;
 
-	@OneToOne
+	@OneToOne(cascade=CascadeType.REMOVE)
 	private User user;
 
 	/**

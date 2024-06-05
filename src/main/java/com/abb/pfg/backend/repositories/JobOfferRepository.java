@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.abb.pfg.backend.commons.Modality;
-import com.abb.pfg.backend.entities.Area;
 import com.abb.pfg.backend.entities.JobOffer;
 
 /**
@@ -31,13 +30,15 @@ public interface JobOfferRepository extends JpaRepository<JobOffer,Long>{
 	 * @return List - list of job offers
 	 */
 	@Query("SELECT jo FROM JobOffer jo"
-			+ " WHERE (:city IS NULL or jo.city = :city)"
+			+ " WHERE (:city IS NULL or jo.city LIKE %:city%)"
 			+ " AND (:modality IS NULL or jo.modality = :modality)"
-			+ " AND (:areaId IS NULL or jo.area.id = :areaId)"
+			+ " AND (:area IS NULL or jo.area.name = :area)"
 			+ " AND (:minDuration IS NULL or month(jo.endDate)-month(jo.startDate) >= :minDuration)"
 			+ " AND (:maxDuration IS NULL or month(jo.endDate)-month(jo.startDate) <= :maxDuration)"
-			+ " AND (:companyId IS NULL or jo.company.id = :companyId)")
-	public Page<JobOffer> findByCityAndModalityAndAreaAndDurationAndCompany_Id(@Param("city") String city,
-			@Param("modality") Modality modality, @Param("area") Area areaId, @Param("minDuration") Integer minDuration,
-			@Param("maxDuration") Integer maxDuration, @Param("companyId") Long companyId, Pageable pageable);
+			+ " AND (:name IS NULL or jo.company.name LIKE %:name%"
+			+ " OR jo.title LIKE %:name%)"
+			+ " AND (:companyId IS NULL or jo.company.user.username = :companyId)")
+	public Page<JobOffer> findByCityAndModalityAndArea_IdAndDurationAndCompany_Id(@Param("city") String city,
+			@Param("modality") Modality modality, @Param("area") String area, @Param("minDuration") Integer minDuration,
+			@Param("maxDuration") Integer maxDuration, @Param("companyId") String companyId, @Param("name") String name, Pageable pageable);
 }

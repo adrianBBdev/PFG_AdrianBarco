@@ -1,7 +1,5 @@
 package com.abb.pfg.backend.service;
 
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,27 +35,26 @@ public class ChatService{
 	 *
 	 * @param companyId - company id
 	 * @param studentId - student id
+	 * @param name - company's or student's name
 	 * @param pageable - chat pageable
 	 * @return Page - list of chats
 	 */
-	public Page<Chat> listAllChatsByCompanyAndStudent(Long companyId, Long studentId,Pageable pageable){
-		log.trace("Call service method listAllChatsByCompanyAndStudent()");
-		var chatPage = chatRepository.findByCompany_IdAndStudent_Id(companyId, studentId, pageable);
-		log.debug("List of chats found {}", chatPage.getNumberOfElements());
+	public Page<Chat> listAllChatsByCompanyAndStudent(String companyId, String studentId, 
+			String name, String studentName, String companyName,Pageable pageable){
+		var chatPage = chatRepository.findByCompany_IdAndStudent_IdAndCompanyNameAndStudentName(companyId, 
+				studentId, name, studentName, companyName, pageable);
 		return chatPage;
 	}
 
 	/**
 	 * Gets the chat with the requested id
 	 *
-	 * @param id - chat id
+	 * @param id - chat's id
 	 * @return ChatDto - the requested chat
 	 */
-	public ChatDto getChat(Long id){
-		log.trace("Call service method getChat() with params: {}", id);
+	public ChatDto getChatById(Long id){
 		var optionalChat = chatRepository.findById(id);
 		var chat = optionalChat.isPresent() ? optionalChat.get() : null;
-		log.debug("Chat found: {}", id);
 		return convertToDto(chat);
 	}
 
@@ -67,13 +64,7 @@ public class ChatService{
 	 * @param chatDto - the new chat
 	 */
 	public void createChat(ChatDto chatDto) {
-		log.trace("Call service method createChat() with params: {}", chatDto.getId());
-		if(!chatRepository.existsById(chatDto.getId())) {
-			log.debug("New chat: {}", chatDto.getId());
-			chatRepository.save(convertToEntity(chatDto));
-		} else {
-			log.debug("The chat already exists");
-		}
+		chatRepository.save(convertToEntity(chatDto));
 	}
 
 	/**
@@ -82,23 +73,20 @@ public class ChatService{
 	 * @param chatDto - the chat that will be updated
 	 */
 	public void updateChat(ChatDto chatDto) {
-		log.trace("Call service method updateChat() with params: {}", chatDto.getId());
 		if(chatRepository.existsById(chatDto.getId())) {
-			log.debug("Chat updated: {}", chatDto.getId());
 			chatRepository.save(convertToEntity(chatDto));
-		} else {
-			log.debug("The chat does not exist");
+			return;
 		}
+		log.debug("The chat does not exist");
 	}
 
 	/**
-	 * Deletes all provided chats
+	 * Deletes the provided chat
 	 *
-	 * @param chats - list of chats to delete
+	 * @param chat - chat to delete
 	 */
-	public void deleteChats(List<Chat> chats) {
-		log.trace("Call service method deleteChats() with {} chats", chats.size());
-		chatRepository.deleteAllInBatch(chats);
+	public void deleteChat(Long id) {
+		chatRepository.deleteById(id);
 	}
 
 	/**
@@ -108,8 +96,11 @@ public class ChatService{
 	 * @return ChatDto - data transfer object converted
 	 */
 	private ChatDto convertToDto(Chat chat) {
-		var chatDto = modelMapper.map(chat, ChatDto.class);
-		return chatDto;
+		try {
+			return modelMapper.map(chat, ChatDto.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 
 	/**
@@ -119,7 +110,10 @@ public class ChatService{
 	 * @return Chat - entity converted
 	 */
 	private Chat convertToEntity(ChatDto chatDto) {
-		var chat = modelMapper.map(chatDto, Chat.class);
-		return chat;
+		try {
+			return modelMapper.map(chatDto, Chat.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 }

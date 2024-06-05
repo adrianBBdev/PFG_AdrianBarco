@@ -1,7 +1,5 @@
 package com.abb.pfg.backend.rest;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +28,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -96,8 +95,8 @@ public class AdminController {
 	@ApiResponses(value = {@ApiResponse(responseCode="204", description="No content")})
 	@DeleteMapping()
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteAdmins(@RequestBody List<Administrator> admins) {
-		log.trace("Call controller method deleteAdmins() with params: {}", admins.size());
-		adminService.deleteAdmins(admins);
+	@Transactional
+	public void deleteAdmin(@RequestParam(required=true) String username) {
+		adminService.deleteAdmin(username);
 	}
 }

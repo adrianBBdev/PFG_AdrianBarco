@@ -6,6 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -45,11 +46,11 @@ public class Student {
 	@Column(length=9,nullable=false,unique=true)
 	private String dni;
 
-	@Size(max= 50, message="Los estudios deben tener como máximo 50 caracteres")
-	@Column(length=50,nullable=true)
+	@Size(max=100, message="Los estudios deben tener como máximo 100 caracteres")
+	@Column(length=100,nullable=true)
 	private String studies;
 
-	@Column(length=255,nullable=true)
+	@Column(length=500,nullable=true)
 	private String description;
 
 	@Column(length=9,nullable=true)
@@ -59,7 +60,7 @@ public class Student {
 	@Column(length=255,nullable=true)
 	private String profilePicture;
 
-	@OneToOne
+	@OneToOne(cascade=CascadeType.REMOVE)
 	private User user;
 
 	/**

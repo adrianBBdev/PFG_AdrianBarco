@@ -1,11 +1,13 @@
 package com.abb.pfg.backend.dtos;
 
+import java.time.Instant;
 import java.util.Date;
 
 import com.abb.pfg.backend.commons.SenderType;
 import com.abb.pfg.backend.entities.Chat;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Data transfer object for message entity
@@ -15,12 +17,12 @@ import lombok.Data;
  *
  */
 @Data
+@NoArgsConstructor
 public class MessageDto {
-
 	private Long id;
 	private String content;
-	private int order;
+	private int orderNumber;
 	private SenderType senderType;
-	private Date timeStamp;
+	private Date timeStamp = Date.from(Instant.now());;
 	private Chat chat;
 }

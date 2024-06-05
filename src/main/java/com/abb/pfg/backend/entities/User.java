@@ -41,7 +41,7 @@ public class User {
 	@Column(nullable=false)
 	private String password;
 
-	@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch=FetchType.EAGER)
 	private Role role;
 
 	private boolean enabled;

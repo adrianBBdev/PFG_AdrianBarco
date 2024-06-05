@@ -26,8 +26,11 @@ public interface ChatRepository extends JpaRepository<Chat,Long>{
 	 * @return Page - list of chats
 	 */
 	@Query("SELECT ch FROM Chat ch"
-			+ " WHERE (:companyId IS NULL or ch.company.id = :companyId)"
-			+ " OR (:studentId IS NULL or ch.student.id = :studentId)")
-	public Page<Chat> findByCompany_IdAndStudent_Id(@Param("companyId") Long companyId, @Param("studentId") Long studentId,
-			Pageable pageable);
+			+ " WHERE (:companyId IS NULL or ch.company.user.username = :companyId)"
+			+ " AND (:studentId IS NULL or ch.student.user.username = :studentId)"
+			+ " AND (:name IS NULL or ch.student.name LIKE %:name% OR ch.company.name LIKE %:name%)"
+			+ " AND (:studentName IS NULL or ch.student.name LIKE %:studentName%)"
+			+ " AND (:companyName IS NULL or ch.company.name LIKE %:companyName%)")
+	public Page<Chat> findByCompany_IdAndStudent_IdAndCompanyNameAndStudentName(@Param("companyId") String companyId, @Param("studentId") String studentId,
+			@Param("name") String name, @Param("studentName") String studentName ,@Param("companyName") String companyName,Pageable pageable);
 }

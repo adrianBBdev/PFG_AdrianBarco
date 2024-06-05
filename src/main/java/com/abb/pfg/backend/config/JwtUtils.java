@@ -33,6 +33,9 @@ public class JwtUtils {
 
 	@Value(value="${authentication.secret-key}")
 	private String SECRET_KEY;
+	
+	@Value(value="${authentication.guest-token}")
+	private String GUEST_TOKEN;
 
 	/**
 	 * Creates a new token for an app user.
@@ -68,5 +71,9 @@ public class JwtUtils {
         	log.error("ERROR: Failed to parse token", ex);
         	return null;
 		}
+	}
+	
+	public String generateGuestToken() {
+		return GUEST_TOKEN;
 	}
 }

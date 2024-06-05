@@ -1,6 +1,9 @@
 package com.abb.pfg.backend.entities;
 
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,29 +32,22 @@ public class Multimedia {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(insertable=false)
 	private Long id;
-
-	@Column(length=20,nullable=false)
+	
+	@Column(length=50,nullable=false)
 	private String name;
 
 	@ManyToOne
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private User user;
-
-//	@Column(columnDefinition="mediumblob",nullable=false)
-//	private byte[] file;
-
-	@Column(length=255, nullable=false)
-	private String filePath;
-
+	
 	/**
 	 * Default class constructor
-	 *
-	 * @param name - multimedia name file
-	 * @param user - multimedia owner
-	 * @param filePath - multimedia file path
+	 * 
+	 * @param name - media's name
+	 * @param user - media's user owner
 	 */
-	public Multimedia(String name, User user, String filePath) {
+	public Multimedia(String name, User user) {
 		this.name = name;
 		this.user = user;
-		this.filePath = filePath;
 	}
 }

@@ -1,7 +1,7 @@
 package com.abb.pfg.backend.service;
 
 
-import java.util.List;
+import java.io.File;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,11 +39,9 @@ public class MultimediaService{
 	 * @param pageable - multimedia objects pageable
 	 * @return Page - list of multimedia
 	 */
-	public Page<Multimedia> listAllMultimediaByUser(Long id, Pageable pageable) {
-		log.trace("Call service method listAllMultimediaByUser()");
-		var multimediaPage = multimediaRepository.findByUser_Id(id, pageable);
-		log.debug("List of Multimedia found: {}", multimediaPage.getNumberOfElements());
-		return multimediaPage;
+	public Page<Multimedia> listAllMultimediaByUser(String name, String username, Pageable pageable) {
+		var resourcePage = multimediaRepository.findByUserAndName(name, username, pageable);
+		return resourcePage;
 	}
 
 	/**
@@ -53,10 +51,8 @@ public class MultimediaService{
 	 * @return MultimediaDto - the requested multimedia
 	 */
 	public MultimediaDto getMultimedia(Long id) {
-		log.trace("Call service method getMultimedia() with params: {}", id);
-		var optionalMultimedia = multimediaRepository.findById(id);
-		var multimedia = optionalMultimedia.isPresent() ? optionalMultimedia.get() : null;
-		log.debug("Multimedia found: {}", multimedia.getId());
+		var optionalMedia = multimediaRepository.findById(id);
+		var multimedia = optionalMedia.isPresent() ? optionalMedia.get() : null;
 		return convertToDto(multimedia);
 	}
 
@@ -66,13 +62,7 @@ public class MultimediaService{
 	 * @param multimediaDto - the new multimedia file
 	 */
 	public void createMultimedia(MultimediaDto multimediaDto) {
-		log.trace("Call service method createMultimedia() with params: {}", multimediaDto.getId());
-		if(!multimediaRepository.existsById(multimediaDto.getId())) {
-			log.debug("New multimedia file: {}", multimediaDto.getId());
-			multimediaRepository.save(convertToEntity(multimediaDto));
-		} else {
-			log.debug("The multimedia file already exists");
-		}
+		multimediaRepository.save(convertToEntity(multimediaDto));
 	}
 
 	/**
@@ -81,13 +71,11 @@ public class MultimediaService{
 	 * @param multimediaDto - multimedia to update
 	 */
 	public void updateMultimedia(MultimediaDto multimediaDto) {
-		log.trace("Call service method updateMultimedia() with params: {}", multimediaDto.getId());
 		if(multimediaRepository.existsById(multimediaDto.getId())) {
-			log.debug("Updated multimedia file: {}", multimediaDto.getId());
 			multimediaRepository.save(convertToEntity(multimediaDto));
-		} else {
-			log.debug("The multimedia file already exists");
+			return;
 		}
+		log.debug("The multimedia file does not exist");
 	}
 
 	/**
@@ -95,9 +83,27 @@ public class MultimediaService{
 	 *
 	 * @param multimedias - list of multimedia files
 	 */
-	public void deleteMultimedias(List<Multimedia> multimedias) {
-		log.trace("Call service method deleteMultimedias() with params: {}", multimedias.size());
-		multimediaRepository.deleteAllInBatch(multimedias);
+	public void deleteMultimedia(Long id) {
+		var mediaName = this.getMultimedia(id).getName();
+		multimediaRepository.deleteById(id);
+		deleteFileFromSystem(mediaName);
+	}
+	
+	/**
+	 * Deletes the media resource from system
+	 * 
+	 * @param fileName - file name to delte
+	 * @return boolean - true if it has been deleted, false if not
+	 */
+	private boolean deleteFileFromSystem(String fileName) {
+		var storedPath = "C:\\Users\\Usuario\\Documents\\DocumentosAdrian\\Proyecto_Fin_Grado\\PFG_AdrianBarco\\app_data\\media";
+		try {
+			var file = new File(storedPath + "\\" + fileName);
+			return file.delete();
+		} catch (SecurityException e) {
+			System.err.println("Error: no se ha podido eliminar el archivo del sistema");
+			return false;
+		}
 	}
 
 	/**
@@ -107,8 +113,11 @@ public class MultimediaService{
 	 * @return MultimediaDto - data transfer object converted
 	 */
 	private MultimediaDto convertToDto(Multimedia multimedia) {
-		var multimediaDto = modelMapper.map(multimedia, MultimediaDto.class);
-		return multimediaDto;
+		try {
+			 return modelMapper.map(multimedia, MultimediaDto.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 
 	/**
@@ -118,7 +127,10 @@ public class MultimediaService{
 	 * @return Multimedia - entity converted
 	 */
 	private Multimedia convertToEntity(MultimediaDto multimediaDto) {
-		var multimedia = modelMapper.map(multimediaDto, Multimedia.class);
-		return multimedia;
+		try {
+			return modelMapper.map(multimediaDto, Multimedia.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 }

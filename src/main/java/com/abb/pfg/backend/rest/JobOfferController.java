@@ -1,7 +1,5 @@
 package com.abb.pfg.backend.rest;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,7 +9,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,8 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.abb.pfg.backend.commons.Constants;
 import com.abb.pfg.backend.commons.Modality;
+import com.abb.pfg.backend.config.JobOfferCreationDto;
 import com.abb.pfg.backend.dtos.JobOfferDto;
-import com.abb.pfg.backend.entities.Area;
 import com.abb.pfg.backend.entities.JobOffer;
 import com.abb.pfg.backend.service.JobOfferService;
 
@@ -32,7 +29,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;
+import jakarta.transaction.Transactional;
 
 /**
  * Controller associated with the job offer objects
@@ -42,7 +39,6 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @EnableMethodSecurity
-@Slf4j
 @RestController
 @RequestMapping(value=Constants.Controllers.JobOffers.PATH)
 @Tag(name="JobOfferController", description="Controller to manage the job offers of the web app")
@@ -51,43 +47,41 @@ public class JobOfferController {
 	@Autowired
 	private JobOfferService jobOfferService;
 
-	@PreAuthorize("hasAnyAuthority('ADMIN','STUDENT')")
+	@PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','COMPANY','GUEST')")
 	@Operation(method="GET", description="Gets all job offers or filter by parameters")
 	@ApiResponses(value =
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
 	@GetMapping
 	public Page<JobOffer> getAllJobOffersByCityAndModalityAndAreaAndDurationAndCompany(@RequestParam(required=false) String city,
 			@RequestParam(required=false) Modality modality,
-			@RequestParam(required=false) Area areaId,
+			@RequestParam(required=false) String area,
 			@RequestParam(required=false) Integer minDuration,
 			@RequestParam(required=false) Integer maxDuration,
-			@RequestParam(required=false) Long companyId,
+			@RequestParam(required=false) String companyId,
+			@RequestParam(required=false) String name,
 			@RequestParam(defaultValue="0") int page,
 			@RequestParam(defaultValue="3")int size) {
-		log.trace("Call controller method getAllJobOffers()");
 		var pageable = PageRequest.of(page, size);
 		var jobOfferPage = jobOfferService.listAllJobOffersByCityAndModalityAndAreaAndDurationAndCompany(city,
-				modality, areaId, minDuration, maxDuration, companyId,pageable);
+				modality, area, minDuration, maxDuration, companyId, name,pageable);
 		return jobOfferPage;
 	}
-
-	@PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','COMPANY')")
-	@Operation(method="GET", description="Gets a specific job offer from its id")
+	
+	@PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','COMPANY','GUEST')")
+	@Operation(method="GET", description="Gets a specific job offer from its offer code")
 	@ApiResponses(value =
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
-	@GetMapping(value="/{id}", produces=MediaType.APPLICATION_JSON_VALUE)
-	public JobOfferDto getJobOffer(@PathVariable Long id) {
-		log.trace("Call controller method getJobOffer() with params: {}", id);
-		return jobOfferService.getJobOffer(id);
+	@GetMapping(value="/jobOffer",produces=MediaType.APPLICATION_JSON_VALUE)
+	public JobOfferDto getJobOfferByOfferId(@RequestParam(required=true) Long offerCode) {
+		return jobOfferService.getJobOfferById(offerCode);
 	}
-
+	
 	@PreAuthorize("hasAnyAuthority('ADMIN','COMPANY')")
 	@Operation(method="POST", description="Creates a new job offer")
 	@ApiResponses(value={@ApiResponse(responseCode="201", description="Created")})
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public void createJobOffer(@RequestBody JobOfferDto jobOfferDto) {
-		log.trace("Call controller method createJobOffer() with params: {}", jobOfferDto.getId());
+	public void createJobOffer(@RequestBody JobOfferCreationDto jobOfferDto) {
 		jobOfferService.createJobOffer(jobOfferDto);
 	}
 
@@ -96,7 +90,6 @@ public class JobOfferController {
 	@ApiResponses(value={@ApiResponse(responseCode="200", description="Success")})
 	@PutMapping
 	public void updateJobOffer(@RequestBody JobOfferDto jobOfferDto) {
-		log.trace("Call controller method createJobOffer() with params: {}", jobOfferDto.getId());
 		jobOfferService.updateJobOffer(jobOfferDto);
 	}
 
@@ -105,8 +98,8 @@ public class JobOfferController {
 	@ApiResponses(value={@ApiResponse(responseCode="204", description="No content")})
 	@DeleteMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteJobOffer(@RequestBody List<JobOffer> jobOffers) {
-		log.trace("Call controller method deleteJobOffers with params: {}", jobOffers.size());
-		jobOfferService.deleteJobOffers(jobOffers);
+	@Transactional
+	public void deleteJobOffer(@RequestParam Long jobOfferDto) {
+		jobOfferService.deleteJobOffers(jobOfferDto);
 	}
 }

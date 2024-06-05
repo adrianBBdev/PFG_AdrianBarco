@@ -3,6 +3,9 @@
  */
 package com.abb.pfg.backend.entities;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,28 +33,16 @@ public class Resource {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(insertable=false)
 	private Long id;
-
-	@Column(length=20,nullable=false)
+	
+	@Column(length=50,nullable=false)
 	private String name;
 
-	@Column(length=255,nullable=false)
-	private String filePath;
-
 	@ManyToOne
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private JobOffer jobOffer;
-
-	/**
-	 * Default class constructor
-	 *
-	 * @param id - resource id
-	 * @param name - resource name
-	 * @param jobOffer - job offer to which the resource belongs
-	 * @param filePath - path where the resource is stored
-	 */
-	public Resource(Long id, String name, JobOffer jobOffer, String filePath) {
-		this.id = id;
+	
+	public Resource (String name, JobOffer jobOffer) {
 		this.name = name;
 		this.jobOffer = jobOffer;
-		this.filePath = filePath;
 	}
 }

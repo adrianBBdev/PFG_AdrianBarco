@@ -1,7 +1,5 @@
 package com.abb.pfg.backend.rest;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,7 +9,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +27,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.slf4j.Slf4j;
+import jakarta.transaction.Transactional;
 
 /**
  * Controller associated with the company objects
@@ -40,7 +37,6 @@ import lombok.extern.slf4j.Slf4j;
  *
  */
 @EnableMethodSecurity
-@Slf4j
 @RestController
 @RequestMapping(value=Constants.Controllers.Companies.PATH)
 @Tag(name="CommpanyController", description="Controller to manage the companies of the web app")
@@ -55,12 +51,12 @@ public class CompanyController {
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
 	@GetMapping(produces=MediaType.APPLICATION_JSON_VALUE)
 	public Page<Company> getAllCompaniesByNameAndCountryAndUser(@RequestParam(required=false) String name,
-			@RequestParam(required=false) String country, @RequestParam(required=false) Long id,
-			@RequestParam(defaultValue="0") Integer page, @RequestParam(defaultValue="3") Integer size) {
-		log.trace("Call controller method getAllCompanies() with params: {}, {}", page, size);
+			@RequestParam(required=false) String country, 
+			@RequestParam(required=false) Long id,
+			@RequestParam(defaultValue="0") Integer page, 
+			@RequestParam(defaultValue="3") Integer size) {
 		var pageable = PageRequest.of(page, size);
 		var pageCompany = companyService.listAllCompaniesByNameAndCountryAndUser(name, country, id, pageable);
-		log.debug("List of companies found: {}", pageCompany.getNumberOfElements());
 		return pageCompany;
 	}
 
@@ -68,10 +64,9 @@ public class CompanyController {
 	@Operation(method="GET", description="Gets a specific company from its id")
 	@ApiResponses(value =
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
-	@GetMapping(value="/{id}", produces=MediaType.APPLICATION_JSON_VALUE)
-	public CompanyDto getCompany(@PathVariable("id") Long id) {
-		log.trace("Call controller method getStudent() with params: {}", id);
-		return companyService.getCompany(id);
+	@GetMapping(value="/company", produces=MediaType.APPLICATION_JSON_VALUE)
+	public CompanyDto getCompanyByUsernameAndDni(@RequestParam(required=false) String username, @RequestParam(required=false) String cif) {
+		return companyService.getCompanyByUsernameAndCif(username, cif);
 	}
 
 	@PreAuthorize("hasAuthority('ADMIN')")
@@ -80,7 +75,6 @@ public class CompanyController {
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public void createCompany(@RequestBody CompanyDto companyDto) {
-		log.trace("Call controller method createCompany() with params: {}", companyDto.getId());
 		companyService.createCompany(companyDto);
 	}
 
@@ -89,7 +83,6 @@ public class CompanyController {
 	@ApiResponses(value = {@ApiResponse(responseCode="200", description="Success")})
 	@PutMapping
 	public void updateCompany(@RequestBody CompanyDto companyDto) {
-		log.trace("Call controller method updateCompany() with params: {}", companyDto.getId());
 		companyService.updateCompany(companyDto);
 	}
 
@@ -98,8 +91,8 @@ public class CompanyController {
 	@ApiResponses(value = {@ApiResponse(responseCode="204", description="No content")})
 	@DeleteMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteCompanies(@RequestBody List<Company> companies) {
-		log.trace("Call controller method deleteCompanies() with params: {}", companies.size());
-		companyService.deleteCompanies(companies);
+	@Transactional
+	public void deleteCompanies(@RequestParam(required=true) String username) {
+		companyService.deleteCompany(username);
 	}
 }

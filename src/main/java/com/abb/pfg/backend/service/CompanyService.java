@@ -1,7 +1,5 @@
 package com.abb.pfg.backend.service;
 
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,23 +37,23 @@ public class CompanyService {
 	 * @return List - list with the requested companies
 	 */
 	public Page<Company> listAllCompaniesByNameAndCountryAndUser(String name, String country, Long id, Pageable pageable) {
-		log.trace("Call service method listAllCompanies()");
 		var pageCompany = companyRepository.findByNameAndCountryAndUser_Id(name, country, id, pageable);
-		log.debug("List of companies found: {}", pageCompany.getNumberOfElements());
 		return pageCompany;
 	}
-
+	
 	/**
 	 * Gets the company with the requested id
-	 *
-	 * @param id - company id
+	 * 
+	 * @param username - company's username
+	 * @param cif - company's cif
 	 * @return CompanyDto - the requested company if exists, or null
 	 */
-	public CompanyDto getCompany(Long id) {
-		log.trace("Call service method getCompany() with params: {}", id);
-		var optionalCompany = companyRepository.findById(id);
+	public CompanyDto getCompanyByUsernameAndCif(String username, String cif) {
+		if(username == null) {
+			return getCompanyByCif(cif);
+		}
+		var optionalCompany = companyRepository.findByUsername(username);
 		var company = optionalCompany.isPresent() ? optionalCompany.get() : null;
-		log.debug("Company found: {}", company.getId());
 		return convertToDto(company);
 	}
 
@@ -66,10 +64,8 @@ public class CompanyService {
 	 * @return CompanyDto - the requested company if exists, or null
 	 */
 	public CompanyDto getCompanyByCif(String cif) {
-		log.trace("Call service method getCompanyByCif() with params: {}", cif);
 		var optionalCompany = companyRepository.findByCif(cif);
 		var company = optionalCompany.isPresent() ? optionalCompany.get() : null;
-		log.debug("Company found: {}", company.getCif());
 		return convertToDto(company);
 	}
 
@@ -79,13 +75,11 @@ public class CompanyService {
 	 * @param companyDto - the company that will be created
 	 */
 	public void createCompany(CompanyDto companyDto) {
-		log.trace("Call service method createCompany() with params: {}", companyDto.getId());
 		if(!companyRepository.existsByCif(companyDto.getCif())){
-			log.debug("New company: {}", companyDto.getCif());
 			companyRepository.save(convertToEntity(companyDto));
-		} else {
-			log.debug("The company already exists");
+			return;
 		}
+		log.debug("The company already exists");
 	}
 
 	/**
@@ -94,23 +88,21 @@ public class CompanyService {
 	 * @param companyDto - the company that will be updated
 	 */
 	public void updateCompany(CompanyDto companyDto) {
-		log.trace("Call service method updateCompany() with params: {}", companyDto.getId());
-		if(companyRepository.existsById(companyDto.getId())){
-			log.debug("Company updated: {}", companyDto.getId());
+		if(companyRepository.existsByCif(companyDto.getCif())){
 			companyRepository.save(convertToEntity(companyDto));
-		} else {
-			log.debug("The company does not exist");
+			return;
 		}
+		log.debug("The company does not exist");
 	}
 
 	/**
 	 * Deletes all provided companies
 	 *
-	 * @param companies - list of companies to delete
+	 * @param username - company's username to delete
 	 */
-	public void deleteCompanies(List<Company> companies) {
-		log.trace("Call service method deleteCompanies() with {} companies", companies.size());
-		companyRepository.deleteAllInBatch(companies);
+	public void deleteCompany(String username) {
+		var user = companyRepository.findByUsername(username).get().getUser();
+		companyRepository.deleteByUser(user);
 	}
 
 	/**
@@ -120,8 +112,11 @@ public class CompanyService {
 	 * @return CompanyDto - data transfer object converted
 	 */
 	private CompanyDto convertToDto(Company company) {
-		var companyDto = modelMapper.map(company, CompanyDto.class);
-		return companyDto;
+		try {
+			return modelMapper.map(company, CompanyDto.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 
 	/**
@@ -130,8 +125,11 @@ public class CompanyService {
 	 * @param companyDto - data transfer object to convert
 	 * @return Company - company converted
 	 */
-	private Company convertToEntity(CompanyDto companyDto) {
-		var company = modelMapper.map(companyDto, Company.class);
-		return company;
+	public Company convertToEntity(CompanyDto companyDto) {
+		try {
+			return modelMapper.map(companyDto, Company.class);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }

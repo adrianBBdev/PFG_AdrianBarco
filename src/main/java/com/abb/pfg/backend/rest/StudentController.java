@@ -1,8 +1,6 @@
 
 package com.abb.pfg.backend.rest;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,7 +10,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +28,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -55,24 +53,23 @@ public class StudentController {
 	@ApiResponses(value =
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
 	@GetMapping(produces=MediaType.APPLICATION_JSON_VALUE)
-	public Page<Student> getAllStudentsByNameAndStudiesAndUser(@RequestParam(required=false) String name, @RequestParam(required=false) String studies,
-			@RequestParam(required=false) Long id,@RequestParam(defaultValue="0") Integer page,
+	public Page<Student> getAllStudentsByNameAndStudiesAndUser(@RequestParam(required=false) String name, 
+			@RequestParam(required=false) String studies,
+			@RequestParam(required=false) Long id,
+			@RequestParam(defaultValue="0") Integer page,
 			@RequestParam(defaultValue="3") Integer size) {
-		log.trace("Call controller method getAllStudentsByNameAndStudiesAndUser() with params: {}. {}", page, size);
 		var pageable = PageRequest.of(page, size);
 		var pageStudent = studentService.listAllStudentsByNameAndStudiesAndUser(name, studies, id, pageable);
-		log.debug("List of students found: {}", pageStudent.getNumberOfElements());
 		return pageStudent;
 	}
-
+	
 	@PreAuthorize("hasAnyAuthority('ADMIN','STUDENT','COMPANY')")
-	@Operation(method="GET", description="Gets a specific student from its id")
+	@Operation(method="GET", description="Gets a specific student from its username")
 	@ApiResponses(value =
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
-	@GetMapping(value="/{id}", produces=MediaType.APPLICATION_JSON_VALUE)
-	public StudentDto getStudent(@PathVariable("id") Long id) {
-		log.trace("Call controller method getStudent() with params: {}", id);
-		return studentService.getStudent(id);
+	@GetMapping(value="/student",produces=MediaType.APPLICATION_JSON_VALUE)
+	public StudentDto getStudentByUsernameAndDni(@RequestParam(required=false) String username, @RequestParam(required=false) String dni) {
+		return studentService.getStudentByUsernameAndDni(username, dni);
 	}
 
 	@PreAuthorize("hasAuthority('ADMIN')")
@@ -99,8 +96,8 @@ public class StudentController {
 	@ApiResponses(value = {@ApiResponse(responseCode="204", description="No content")})
 	@DeleteMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteStudents(@RequestBody List<Student> students) {
-		log.trace("Call controller method deleteStudents() with params: {}", students.size());
-		studentService.deleteStudents(students);
+	@Transactional
+	public void deleteStudents(@RequestParam(required=true) String username) {
+		studentService.deleteStudent(username);
 	}
 }

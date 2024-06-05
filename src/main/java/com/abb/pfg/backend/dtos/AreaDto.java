@@ -11,7 +11,6 @@ import lombok.Data;
  */
 @Data
 public class AreaDto {
-
 	private Long id;
 	private String name;
 }

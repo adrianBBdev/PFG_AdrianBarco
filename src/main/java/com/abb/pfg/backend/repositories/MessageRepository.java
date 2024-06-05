@@ -26,6 +26,9 @@ public interface MessageRepository extends JpaRepository<Message,Long>{
 	 */
 	@Query("SELECT ms FROM Message ms"
 			+ " WHERE (:chatId IS NULL or ms.chat.id = :chatId)")
-	public Page<Message> findByChat_Id(@Param("chatId") Long chatId, Pageable pageable);
-
+	public Page<Message> findMessagesByChatCode(@Param("chatId") Long chatId, Pageable pageable);
+	
+	@Query("SELECT COUNT(ms) FROM Message ms"
+			+ " WHERE ms.chat.id = :chatId")
+	public int countMessagesByChatId(@Param("chatId") Long chatId);
 }

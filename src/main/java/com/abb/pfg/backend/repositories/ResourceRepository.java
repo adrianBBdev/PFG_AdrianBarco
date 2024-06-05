@@ -25,6 +25,8 @@ public interface ResourceRepository extends JpaRepository<Resource,Long>{
 	 * @return Page<Resource> - list of resources
 	 */
 	@Query("SELECT rs FROM Resource rs"
-			+ " WHERE (:jobOfferId IS NULL or rs.jobOffer.id = :jobOfferId)")
-	public Page<Resource> findByJobOffer_Id(@Param("jobOfferId") Long jobOfferId, Pageable pageable);
+			+ " WHERE (:jobOfferId IS NULL or rs.jobOffer.id = :jobOfferId)"
+			+ " AND (:name IS NULL or rs.name LIKE %:name%)")
+	public Page<Resource> findByJobOfferIdAndName(@Param("jobOfferId") Long jobOfferId,
+			@Param("name") String name, Pageable pageable);
 }

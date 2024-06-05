@@ -1,16 +1,21 @@
 package com.abb.pfg.backend.config;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.abb.pfg.backend.entities.Role;
 import com.abb.pfg.backend.service.CustomUserDetailsService;
+import com.abb.pfg.backend.service.RoleService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -34,6 +39,9 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter{
 
 	@Autowired
 	CustomUserDetailsService userDetailsService;
+	
+	@Autowired
+	RoleService roleService;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request,
@@ -54,6 +62,19 @@ public class AuthenticationTokenFilter extends OncePerRequestFilter{
 			filterChain.doFilter(request, response);
 			return;
         }
+		
+		if(token.equals(jwtUtils.generateGuestToken())) {
+			var role = roleService.getRoleByName("GUEST");
+	        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+	        authorities.add(new SimpleGrantedAuthority(role.getName()));
+			var auth = new UsernamePasswordAuthenticationToken(
+					"GUEST",
+					null,
+					authorities);
+			SecurityContextHolder.getContext().setAuthentication(auth);
+			filterChain.doFilter(request, response);
+			return;
+		}
 
 		var jwt = jwtUtils.validateAndParseToken(token).getPayload();
 

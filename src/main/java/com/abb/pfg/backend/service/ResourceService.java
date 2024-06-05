@@ -1,6 +1,6 @@
 package com.abb.pfg.backend.service;
 
-import java.util.List;
+import java.io.File;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +38,8 @@ public class ResourceService {
 	 * @param pageable - resources pageable
 	 * @return Page - list of resources
 	 */
-	public Page<Resource> listAllResourcesByJobOffer(Long id, Pageable pageable) {
-		log.trace("Call service method listAllResourceByJobOffer()");
-		var resourcePage = resourceRepository.findByJobOffer_Id(id, pageable);
-		log.debug("List of resources found: {}", resourcePage.getNumberOfElements());
+	public Page<Resource> listAllResourcesByJobOfferIdAndName(Long jobOfferId, String name, Pageable pageable) {
+		var resourcePage = resourceRepository.findByJobOfferIdAndName(jobOfferId, name, pageable);
 		return resourcePage;
 	}
 
@@ -52,10 +50,8 @@ public class ResourceService {
 	 * @return ResourceDto - the requested Resource
 	 */
 	public ResourceDto getResource(Long id) {
-		log.trace("Call service method getResource() with params: {}", id);
 		var optionalResource = resourceRepository.findById(id);
 		var resource = optionalResource.isPresent() ? optionalResource.get() : null;
-		log.debug("Resource found: {}", resource.getId());
 		return convertToDto(resource);
 	}
 
@@ -65,13 +61,7 @@ public class ResourceService {
 	 * @param resourceDto - the new resource file
 	 */
 	public void createResource(ResourceDto resourceDto) {
-		log.trace("Call service method createResource() with params: {}", resourceDto.getId());
-		if(!resourceRepository.existsById(resourceDto.getId())) {
-			log.debug("New resource file: {}", resourceDto.getId());
-			resourceRepository.save(convertToEntity(resourceDto));
-		} else {
-			log.debug("The resource file already exists");
-		}
+		resourceRepository.save(convertToEntity(resourceDto));
 	}
 
 	/**
@@ -79,14 +69,12 @@ public class ResourceService {
 	 *
 	 * @param resourceDto - resource to update
 	 */
-	public void updateMultimedia(ResourceDto resourceDto) {
-		log.trace("Call service method updateResource() with params: {}", resourceDto.getId());
+	public void updateResource(ResourceDto resourceDto) {
 		if(resourceRepository.existsById(resourceDto.getId())) {
-			log.debug("Resource file updated: {}", resourceDto.getId());
 			resourceRepository.save(convertToEntity(resourceDto));
-		} else {
-			log.debug("The resource file does not exist");
+			return;
 		}
+		log.debug("The resource file does not exist");
 	}
 
 	/**
@@ -94,9 +82,27 @@ public class ResourceService {
 	 *
 	 * @param resources - list of resource files
 	 */
-	public void deleteMultimedias(List<Resource> resources) {
-		log.trace("Call service method deleteResources() with params: {}", resources.size());
-		resourceRepository.deleteAllInBatch(resources);
+	public void deleteResource(Long id) {
+		var resourceName = this.getResource(id).getName();
+		resourceRepository.deleteById(id);
+		deleteFileFromSystem(resourceName);
+	}
+	
+	/**
+	 * Deletes a resource from system
+	 * 
+	 * @param fileName - file name to delete
+	 * @return boolean - true if it has been deleted, false if not
+	 */
+	private boolean deleteFileFromSystem(String fileName) {
+		var storedPath = "C:\\Users\\Usuario\\Documents\\DocumentosAdrian\\Proyecto_Fin_Grado\\PFG_AdrianBarco\\app_data\\resources";
+		try {
+			var file = new File(storedPath + "\\" + fileName);
+			return file.delete();
+		} catch (SecurityException e) {
+			System.err.println("Error: no se ha podido eliminar el archivo del sistema");
+			return false;
+		}
 	}
 
 	/**
@@ -106,8 +112,11 @@ public class ResourceService {
 	 * @return ResourceDto - data transfer object converted
 	 */
 	private ResourceDto convertToDto(Resource resource) {
-		var resourceDto = modelMapper.map(resource, ResourceDto.class);
-		return resourceDto;
+		try {
+			return modelMapper.map(resource, ResourceDto.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 
 	/**
@@ -117,7 +126,10 @@ public class ResourceService {
 	 * @return Resource - entity converted
 	 */
 	private Resource convertToEntity(ResourceDto resourceDto) {
-		var resource = modelMapper.map(resourceDto, Resource.class);
-		return resource;
+		try {
+			return modelMapper.map(resourceDto, Resource.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 }

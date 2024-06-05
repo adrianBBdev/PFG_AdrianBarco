@@ -3,6 +3,7 @@ package com.abb.pfg.backend.dtos;
 import com.abb.pfg.backend.entities.User;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Data transfer object for Mutimedia entity
@@ -12,10 +13,10 @@ import lombok.Data;
  *
  */
 @Data
+@NoArgsConstructor
 public class MultimediaDto {
 	private Long id;
 	private String name;
 	private User user;
-	private String filePath;
 
 }

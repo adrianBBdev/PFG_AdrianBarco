@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.abb.pfg.backend.entities.Company;
+import com.abb.pfg.backend.entities.User;
 
 /**
  * Company JPA repository
@@ -36,6 +37,19 @@ public interface CompanyRepository extends JpaRepository<Company,Long>{
 			@Param("country") String country,
 			@Param("userId") Long userId,
 			Pageable pageable);
+	
+	/**
+	 * Gets the company with the specified username
+	 *
+	 * @param username - student username
+	 * @return Company, if finds the username, null if not
+	 */
+	@Query("SELECT cm FROM Company cm"
+			+ " WHERE (cm.user.username = :username)")
+	public Optional<Company> findByUsername(@Param("username") String username);
+	
+	
+	public void deleteByUser(User user);
 
 	/**
 	 * Verifies if a company has the same cif as the parameter provided.

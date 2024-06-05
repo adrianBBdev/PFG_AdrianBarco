@@ -8,7 +8,7 @@ package com.abb.pfg.backend.commons;
  *
  */
 public enum Modality {
-	HYBRID,
-	INPERSON,
-	TELECOMMUTING
+	HIBRIDO,
+	PRESENCIAL,
+	TELETRABAJO
 }

@@ -1,5 +1,6 @@
 package com.abb.pfg.backend.dtos;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -8,6 +9,7 @@ import com.abb.pfg.backend.entities.Area;
 import com.abb.pfg.backend.entities.Company;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Data transfer object for the JobOffer entity
@@ -18,8 +20,8 @@ import lombok.Data;
  */
 
 @Data
+@NoArgsConstructor
 public class JobOfferDto {
-
 	private Long id;
 	private String title;
 	private String description;
@@ -28,9 +30,10 @@ public class JobOfferDto {
 	private Modality modality;
 	private Area area;
 	private int vacancies;
-	private Date timeStamp;
+	private double salary;
+	private Date timeStamp = Date.from(Instant.now());
 	private String address;
 	private String city;
-	private boolean state;
+	private boolean status = true;
 	private Company company;
 }

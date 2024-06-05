@@ -1,7 +1,5 @@
 package com.abb.pfg.backend.service;
 
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,9 +36,7 @@ public class AdminService {
 	 * @return Page - list with the requested admins
 	 */
 	public Page<Administrator> listAllAdmins(Pageable pageable){
-		log.trace("Call service method listAllAdmins()");
 		var admins = adminRepository.findAll(pageable);
-		log.debug("List of admins found: {}", admins.getNumberOfElements());
 		return admins;
 	}
 
@@ -51,10 +47,8 @@ public class AdminService {
 	 * @return AdministratorDtp - the requested admin
 	 */
 	public AdministratorDto getAdmin(Long id) {
-		log.trace("Call service method getArea() with params: {}", id);
 		var optionalAdmin = adminRepository.findById(id);
 		var admin = optionalAdmin.isPresent() ? optionalAdmin.get() : null;
-		log.debug("Admin found: {}", admin.getId());
 		return convertToDto(admin);
 	}
 
@@ -64,13 +58,11 @@ public class AdminService {
 	 * @param adminDto - the new admin
 	 */
 	public void createAdmin(AdministratorDto adminDto) {
-		log.trace("Call service method createAdmin() with params: {}", adminDto.getId());
-		if(!adminRepository.existsById(adminDto.getId())) {
-			log.debug("New admin: {}", adminDto.getId());
+		if(!adminRepository.existsByUser(adminDto.getUser())) {
 			adminRepository.save(convertToEntity(adminDto));
-		} else {
-			log.debug("The admin already exists");
+			return;
 		}
+		log.debug("The admin already exists");
 	}
 
 	/**
@@ -79,13 +71,11 @@ public class AdminService {
 	 * @param adminDto - the admin that will be updated
 	 */
 	public void updateAdmin(AdministratorDto adminDto) {
-		log.trace("Call service method updateAdmin() with params: {}", adminDto.getId());
 		if(adminRepository.existsById(adminDto.getId())) {
-			log.debug("Admin updated: {}", adminDto.getId());
 			adminRepository.save(convertToEntity(adminDto));
-		} else {
-			log.debug("The admin does not exist");
+			return;
 		}
+		log.debug("The admin does not exist");
 	}
 
 	/**
@@ -93,9 +83,9 @@ public class AdminService {
 	 *
 	 * @param admins - list of admins to delete
 	 */
-	public void deleteAdmins(List<Administrator> admins) {
-		log.trace("Call service method deleteAllAdmins() with params: {}", admins.size());
-		adminRepository.deleteAllInBatch(admins);
+	public void deleteAdmin(String username) {
+		var user = adminRepository.findByUsername(username).get().getUser();
+		adminRepository.deleteByUser(user);
 	}
 
 	/**
@@ -105,8 +95,12 @@ public class AdminService {
 	 * @return AdministratorDto - data transfer object converted
 	 */
 	private AdministratorDto convertToDto(Administrator admin) {
-		var adminDto = modelMapper.map(admin, AdministratorDto.class);
-		return adminDto;
+		try {
+			var adminDto = modelMapper.map(admin, AdministratorDto.class);
+			return adminDto;
+		} catch(Exception e) {
+			return null;
+		}
 	}
 
 	/**
@@ -116,7 +110,10 @@ public class AdminService {
 	 * @return Administrator - entity converted
 	 */
 	private Administrator convertToEntity(AdministratorDto adminDto) {
-		var admin = modelMapper.map(adminDto, Administrator.class);
-		return admin;
+		try {
+			return modelMapper.map(adminDto, Administrator.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 }

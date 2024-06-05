@@ -3,6 +3,10 @@ package com.abb.pfg.backend.entities;
 import java.time.Instant;
 import java.util.Date;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.abb.pfg.backend.commons.SenderType;
 
 import jakarta.persistence.Column;
@@ -36,8 +40,8 @@ public class Message {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(insertable=false)
 	private Long id;
-
-	@Column(length=255,nullable=false)
+	
+	@Column(length=500,nullable=false)
 	private String content;
 
 	@Column(length=20,nullable=false)
@@ -46,10 +50,12 @@ public class Message {
 	@Enumerated(EnumType.STRING)
 	private SenderType senderType;
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern="dd-MM-yyyy HH:mm:ss")
 	private Date timeStamp;
 
 	@ManyToOne
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Chat chat;
 
 	/**

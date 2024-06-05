@@ -1,6 +1,4 @@
-/**
- *
- */
+
 package com.abb.pfg.backend.service;
 
 import org.modelmapper.ModelMapper;
@@ -65,8 +63,11 @@ public class RoleService {
 	 * @return RoleDto - data transfer object converted
 	 */
 	private RoleDto convertToDto(Role role) {
-		var roleDto = modelMapper.map(role, RoleDto.class);
-		return roleDto;
+		try {
+			return modelMapper.map(role, RoleDto.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 
 	/**
@@ -75,8 +76,11 @@ public class RoleService {
 	 * @param roleDto - data transfer object to convert
 	 * @return Role - entity converted
 	 */
-	private Role convertToEntity(RoleDto roleDto) {
-		var role = modelMapper.map(roleDto, Role.class);
-		return role;
+	public Role convertToEntity(RoleDto roleDto) {
+		try {
+			return modelMapper.map(roleDto, Role.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 }

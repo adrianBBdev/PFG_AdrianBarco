@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.abb.pfg.backend.entities.Student;
+import com.abb.pfg.backend.entities.User;
 
 /**
  * Students JPA repository
@@ -35,6 +36,18 @@ public interface StudentRepository extends JpaRepository<Student,Long> {
 	public Page<Student> findByNameAndStudiesAndUser_Id(@Param("name") String name, @Param("studies") String studies,
 			@Param("userId") Long userId, Pageable pageable);
 
+	/**
+	 * Gets the student with the specified username
+	 *
+	 * @param username - student username
+	 * @return Student, if finds the username, null if not
+	 */
+	
+	@Query("SELECT st FROM Student st"
+			+ " WHERE (st.user.username = :username)")
+	public Optional<Student> findByUsername(@Param("username") String username);
+	
+	public void deleteByUser(User user);
 	/**
 	 * Verifies if a student has the same dni as the parameter provided.
 	 *

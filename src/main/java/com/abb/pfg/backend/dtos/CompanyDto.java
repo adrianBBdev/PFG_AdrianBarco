@@ -16,21 +16,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class CompanyDto {
-
 	private Long id;
 	private String name;
 	private String cif;
 	private String country;
 	private String description;
-	private String logo;
+	private String profilePicture;
 	private User user;
-
-	public CompanyDto(String name, String cif, String country, String description, String logo, User user) {
-		this.name = name;
-		this.cif = cif;
-		this.country = country;
-		this.description = description;
-		this.logo = logo;
-		this.user = user;
-	}
 }

@@ -1,9 +1,11 @@
 package com.abb.pfg.backend.entities;
 
-
-
 import java.time.Instant;
 import java.util.Date;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,7 +26,6 @@ import lombok.NoArgsConstructor;
  * @version 1.0
  *
  */
-
 @Entity
 @Table(name="Chat")
 @Data
@@ -36,13 +37,16 @@ public class Chat {
 	@Column(insertable=false)
 	private Long id;
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern="dd-MM-yyyy HH:mm:ss")
 	private Date timeStamp;
 
 	@ManyToOne
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Company company;
 
 	@ManyToOne
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Student student;
 
 	/**

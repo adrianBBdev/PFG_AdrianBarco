@@ -1,7 +1,5 @@
 package com.abb.pfg.backend.rest;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,7 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +26,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -47,12 +45,12 @@ public class AreaController {
 	@Autowired
 	private AreaService areaService;
 
-	@PreAuthorize("hasAnyAuthority('ADMIN','COMPANY','STUDENT')")
+	@PreAuthorize("hasAnyAuthority('ADMIN','COMPANY','STUDENT','GUEST')")
 	@Operation(method="GET", description="Gets all aras")
 	@ApiResponses(value =
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
 	@GetMapping(produces=MediaType.APPLICATION_JSON_VALUE)
-	public Page<Area> getAllAreas(@RequestParam(defaultValue="0") Integer page, @RequestParam(defaultValue="3") Integer size) {
+	public Page<Area> getAllAreas(@RequestParam(defaultValue="0") Integer page, @RequestParam(defaultValue="15") Integer size) {
 		log.trace("Call controller method getAllAreas()");
 		var pageable = PageRequest.of(page, size);
 		var pageArea = areaService.listAllAreas(pageable);
@@ -61,19 +59,18 @@ public class AreaController {
 	}
 
 	@PreAuthorize("hasAnyAuthority('ADMIN','COMPANY','STUDENT')")
-	@Operation(method="GET", description="Gets a specific area from its id")
+	@Operation(method="GET", description="Gets a specific area from its name")
 	@ApiResponses(value =
 		{@ApiResponse(responseCode="200", description="Success", content=@Content(mediaType=MediaType.APPLICATION_JSON_VALUE))})
-	@GetMapping(value="/{id}", produces=MediaType.APPLICATION_JSON_VALUE)
-	public AreaDto getArea(@PathVariable("id") Long id) {
-		log.trace("Call controller method getArea() with params: {}", id);
-		return areaService.getArea(id);
+	@GetMapping(value="/area", produces=MediaType.APPLICATION_JSON_VALUE)
+	public AreaDto getArea(@RequestParam(required=true) String name) {
+		return areaService.getArea(name);
 	}
 
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@Operation(method="POST", description="Creates a new area")
 	@ApiResponses(value = {@ApiResponse(responseCode="202", description="Created")})
-	@PostMapping()
+	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public void createArea(@RequestBody AreaDto areaDto) {
 		log.trace("Call controller method createArea() with params: {}", areaDto.getId());
@@ -83,19 +80,19 @@ public class AreaController {
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@Operation(method="PUT", description="Updates an existing area")
 	@ApiResponses(value = {@ApiResponse(responseCode="200", description="Success")})
-	@PutMapping()
+	@PutMapping
 	public void updateArea(@RequestBody AreaDto areaDto) {
 		log.trace("Call controller mehtod updateArea() with params: {}", areaDto.getId());
 		areaService.updateArea(areaDto);
 	}
 
 	@PreAuthorize("hasAuthority('ADMIN')")
-	@Operation(method="DELETE", description="Deletes a list of specified areas")
+	@Operation(method="DELETE", description="Deletes an specified area")
 	@ApiResponses(value = {@ApiResponse(responseCode="204", description="No content")})
-	@DeleteMapping()
+	@DeleteMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteAreas(@RequestBody List<Area> areas) {
-		log.trace("Call controller method deleteAreas() with params: {}", areas.size());
-		areaService.deleteAreas(areas);
+	@Transactional
+	public void deleteArea(@RequestParam(required=true) String name) {
+		areaService.deleteArea(name);
 	}
 }

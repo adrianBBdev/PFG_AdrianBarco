@@ -1,7 +1,5 @@
 package com.abb.pfg.backend.service;
 
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,10 +7,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.abb.pfg.backend.config.UserRegistrationDto;
+import com.abb.pfg.backend.dtos.AdministratorDto;
 import com.abb.pfg.backend.dtos.UserDto;
 import com.abb.pfg.backend.entities.User;
 import com.abb.pfg.backend.repositories.UserRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -31,6 +32,18 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private RoleService roleService;
+	
+	@Autowired
+	private StudentService studentService;
+	
+	@Autowired
+	private CompanyService companyService;
+	
+	@Autowired
+	private AdminService adminService;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -42,9 +55,7 @@ public class UserService {
 	 * @return Page - list of users
 	 */
 	public Page<User> listAllUsers(Pageable pageable){
-		log.trace("Call service method listAllUsers()");
 		var userPage = userRepository.findAll(pageable);
-		log.debug("List of users found: {}", userPage.getNumberOfElements());
 		return userPage;
 	}
 
@@ -55,23 +66,7 @@ public class UserService {
 	 * @return UserDto - the requested user
 	 */
 	public UserDto getUserByUsername(String username) {
-		log.trace("Call service method getUserByUsername() with params: {username}");
 		var user = userRepository.findByUsername(username);
-		log.debug("User found: {}", user.getUsername());
-		return convertToDto(user);
-	}
-
-	/**
-	 * Gets a specific user from its id
-	 *
-	 * @param id - user's id
-	 * @return UserDto - the requested user
-	 */
-	public UserDto getUser(Long id) {
-		log.trace("Call service method getUser() with params: {id}");
-		var optionalUser = userRepository.findById(id);
-		var user = optionalUser.isPresent() ? optionalUser.get() : null;
-		log.debug("User found: {}", user.getId());
 		return convertToDto(user);
 	}
 
@@ -80,13 +75,34 @@ public class UserService {
 	 *
 	 * @param userDto - the new user
 	 */
-	public void createUser(UserDto userDto) {
-		log.trace("Call service method createUser() with params: {}", userDto.getUsername());
-		if(!userRepository.existsByUsername(userDto.getUsername())) {
-			userRepository.save(convertToEntity(userDto));
-			log.debug("New user: {}", userDto.getUsername());
-		} else {
-			log.debug("The user already exists");
+	@Transactional
+	public void createUser(UserRegistrationDto userRegistrationDto) {
+		var roleDto = roleService.getRoleByName(userRegistrationDto.getRoleName());
+		var userDto = userRegistrationDto.getUserDto();
+		userDto.setRole(roleService.convertToEntity(roleDto));
+		if(userRepository.existsByUsername(userDto.getUsername())) {
+			return;
+		}
+		userRepository.save(convertToEntity(userDto));
+		verifyRoleBeforeUserCreation(userRegistrationDto, userDto, roleDto.getName());
+	}
+	
+	private void verifyRoleBeforeUserCreation(UserRegistrationDto userRegistrationDto, UserDto userDto, String role) {
+		switch(role) {
+			case "STUDENT":
+				var studentDto = userRegistrationDto.getStudentDto();
+				studentDto.setUser(userRepository.findByUsername(userDto.getUsername()));
+				studentService.createStudent(studentDto);
+				break;
+			case "COMPANY":
+				var companyDto = userRegistrationDto.getCompanyDto();
+				companyDto.setUser(userRepository.findByUsername(userDto.getUsername()));
+				companyService.createCompany(companyDto);
+				break;
+			default:	//"ADMIN"
+				var adminDto = new AdministratorDto();
+				adminDto.setUser(userRepository.findByUsername(userDto.getUsername()));
+				adminService.createAdmin(adminDto);
 		}
 	}
 
@@ -96,13 +112,11 @@ public class UserService {
 	 * @param userDto - the user that will be updated
 	 */
 	public void updateUser(UserDto userDto) {
-		log.trace("Call service method createUser() with params: {}", userDto.getId());
 		if(userRepository.existsById(userDto.getId())) {
-			log.debug("User updated: {}", userDto.getId());
 			userRepository.save(convertToEntity(userDto));
-		} else {
-			log.debug("The user does not exist");
+			return;
 		}
+		log.debug("The user does not exist");
 	}
 
 	/**
@@ -110,9 +124,8 @@ public class UserService {
 	 *
 	 * @param users - list of users to delete
 	 */
-	public void deleteUsers(List<User> users) {
-		log.trace("Call service method deleteUsers() with params: {}", users.size());
-		userRepository.deleteAllInBatch(users);
+	public void deleteUser(String username) {
+		userRepository.deleteByUsername(username);
 	}
 
 	/**
@@ -122,8 +135,11 @@ public class UserService {
 	 * @return UserDto - data transfer object converted
 	 */
 	private UserDto convertToDto(User user) {
-		var userDto = modelMapper.map(user, UserDto.class);
-		return userDto;
+		try {
+			return modelMapper.map(user, UserDto.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 
 	/**
@@ -134,8 +150,11 @@ public class UserService {
 	 */
 	private User convertToEntity(UserDto userDto) {
 		String hashPassword = passwordEncoder.encode(userDto.getPassword());
-		userDto.setPassword(hashPassword);
-		var user = modelMapper.map(userDto, User.class);
-		return user;
+		try {
+			userDto.setPassword(hashPassword);
+			return modelMapper.map(userDto, User.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 }

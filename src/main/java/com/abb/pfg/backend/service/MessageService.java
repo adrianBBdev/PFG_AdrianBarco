@@ -1,7 +1,5 @@
 package com.abb.pfg.backend.service;
 
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,10 +36,8 @@ public class MessageService {
 	 * @param pageable - messages pageable
 	 * @return Page - list of messages
 	 */
-	public Page<Message> listAllMessagesByChat(Long id, Pageable pageable) {
-		log.trace("Call service method listAllMessagesByChat()");
-		var multimediaPage = messageRepository.findByChat_Id(id, pageable);
-		log.debug("List of Message found: {}", multimediaPage.getNumberOfElements());
+	public Page<Message> listAllMessagesByChat(Long chatId, Pageable pageable) {
+		var multimediaPage = messageRepository.findMessagesByChatCode(chatId, pageable);
 		return multimediaPage;
 	}
 
@@ -51,11 +47,9 @@ public class MessageService {
 	 * @param id - multimedia id
 	 * @return MultimediaDto - the requested multimedia
 	 */
-	public MessageDto getMessage(Long id) {
-		log.trace("Call service method getMessage() with params: {}", id);
+	public MessageDto getMessageByCode(Long id) {
 		var optionalMessage = messageRepository.findById(id);
 		var message = optionalMessage.isPresent() ? optionalMessage.get() : null;
-		log.debug("Message found: {}", message.getId());
 		return convertToDto(message);
 	}
 
@@ -65,13 +59,9 @@ public class MessageService {
 	 * @param messageDto - the new message file
 	 */
 	public void createMessage(MessageDto messageDto) {
-		log.trace("Call service method createMessage() with params: {}", messageDto.getId());
-		if(!messageRepository.existsById(messageDto.getId())) {
-			log.debug("New message file: {}", messageDto.getId());
-			messageRepository.save(convertToEntity(messageDto));
-		} else {
-			log.debug("The message file already exists");
-		}
+		var order = messageRepository.countMessagesByChatId(messageDto.getChat().getId());
+		messageDto.setOrderNumber(order);
+		messageRepository.save(convertToEntity(messageDto));
 	}
 
 	/**
@@ -80,13 +70,11 @@ public class MessageService {
 	 * @param messageDto - message to update
 	 */
 	public void updateMessage(MessageDto messageDto) {
-		log.trace("Call service method updateMessage() with params: {}", messageDto.getId());
 		if(messageRepository.existsById(messageDto.getId())) {
-			log.debug("Updated message file: {}", messageDto.getId());
 			messageRepository.save(convertToEntity(messageDto));
-		} else {
-			log.debug("The multimedia file already exists");
-		}
+			return;
+		} 
+		log.debug("The multimedia file already exists");
 	}
 
 	/**
@@ -94,9 +82,8 @@ public class MessageService {
 	 *
 	 * @param messages - list of messages
 	 */
-	public void deleteMessages(List<Message> messages) {
-		log.trace("Call service method deleteMessages() with params: {}", messages.size());
-		messageRepository.deleteAllInBatch(messages);
+	public void deleteMessage(Long id) {
+		messageRepository.deleteById(id);
 	}
 
 	/**
@@ -106,8 +93,11 @@ public class MessageService {
 	 * @return messageDto - data transfer object converted
 	 */
 	private MessageDto convertToDto(Message message) {
-		var messageDto = modelMapper.map(message, MessageDto.class);
-		return messageDto;
+		try {
+			return modelMapper.map(message, MessageDto.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 
 	/**
@@ -117,8 +107,10 @@ public class MessageService {
 	 * @return message - entity converted
 	 */
 	private Message convertToEntity(MessageDto messageDto) {
-		var message = modelMapper.map(messageDto, Message.class);
-		return message;
+		try {
+			return modelMapper.map(messageDto, Message.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
-
 }

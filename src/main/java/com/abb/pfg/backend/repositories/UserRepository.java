@@ -28,4 +28,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	 * @return true if exists, false if not
 	 */
 	public boolean existsByUsername(String username);
+	
+	/**
+	 * Deletes the user which has the given username
+	 * 
+	 * @param username - user's username
+	 */
+	public void deleteByUsername(String username);
 }

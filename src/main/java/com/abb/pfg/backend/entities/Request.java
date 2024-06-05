@@ -1,10 +1,13 @@
 package com.abb.pfg.backend.entities;
 
-
 import java.time.Instant;
 import java.util.Date;
 
-import com.abb.pfg.backend.commons.RequestState;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.abb.pfg.backend.commons.RequestStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,6 +21,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 /**
@@ -27,11 +31,11 @@ import lombok.NoArgsConstructor;
  * @version 1.0
  *
  */
-
 @Entity
 @Table(name="Request")
 @Data
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper=false)
 public class Request {
 
 	@Id
@@ -39,23 +43,23 @@ public class Request {
 	@Column(insertable=false)
 	private Long id;
 
-	@Column(length=20,nullable=false)
-	private String title;
-
-	@Column(length=300,nullable=false)
+	@Column(length=500,nullable=false)
 	private String content;
 
 	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern="dd-MM-yyyy HH:mm:ss")
 	private Date timeStamp;
 
 	@Enumerated(EnumType.STRING)
 	@Column(length=15,nullable=false)
-	private RequestState requestState;
+	private RequestStatus requestStatus;
 
 	@ManyToOne
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Student student;
 
 	@ManyToOne
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private JobOffer jobOffer;
 
 	/**
@@ -66,13 +70,11 @@ public class Request {
 	 * @param student - student involved in the request
 	 * @param jobOffer - job offer related to the request
 	 */
-	public Request(String title, String content, Student student, JobOffer jobOffer) {
-
-		this.title = title;
+	public Request(String content, Student student, JobOffer jobOffer) {
 		this.content = content;
 		this.student = student;
 		this.jobOffer = jobOffer;
 		this.timeStamp = Date.from(Instant.now());
-		this.requestState = RequestState.PENDING;
+		this.requestStatus = RequestStatus.PENDING;
 	}
 }

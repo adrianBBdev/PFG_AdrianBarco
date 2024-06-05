@@ -1,18 +1,18 @@
 package com.abb.pfg.backend.service;
 
-import java.util.List;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.abb.pfg.backend.commons.RequestState;
+import com.abb.pfg.backend.commons.RequestStatus;
+import com.abb.pfg.backend.config.RequestCreationDto;
 import com.abb.pfg.backend.dtos.RequestDto;
 import com.abb.pfg.backend.entities.Request;
 import com.abb.pfg.backend.repositories.RequestRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
  * @version 1.0
  *
  */
-
 @Slf4j
 @Service
 public class RequestService {
@@ -32,22 +31,26 @@ public class RequestService {
 
 	@Autowired
 	private RequestRepository requestRepository;
+	
+	@Autowired
+	private StudentService studentService;
+	
+	@Autowired
+	private JobOfferService jobOfferService;
 
 	/**
 	 * Gets all requests
 	 *
 	 * @param jobOfferId - job offer id
-	 * @param studentId - student id
-	 * @param requestState - state of the request
+	 * @param userId - user's username
+	 * @param requestStatus - status of the request
 	 * @param pageable - requests pageable
 	 * @return Page - list of requests
 	 */
-	public Page<Request> listAllRequestsByJobOfferAndStudentAndRequestState(Long jobOfferId, Long studentId,
-			RequestState requestState, Pageable pageable) {
-		log.trace("Call service method listAllRequests()");
-		var requestPage = requestRepository.findByJobOffer_IdAndStudent_IdAndRequestState(jobOfferId,
-				studentId, requestState, pageable);
-		log.debug("List of chats found {}", requestPage.getNumberOfElements());
+	public Page<Request> listAllRequestsByJobOfferAndStudentAndRequestStatus(Long jobOfferId, String userId,
+			String name, RequestStatus requestStatus, Pageable pageable) {
+		var requestPage = requestRepository.findByJobOffer_IdAndStudent_IdAndRequestStatus(jobOfferId,
+				userId, name, requestStatus, pageable);
 		return requestPage;
 	}
 
@@ -58,10 +61,8 @@ public class RequestService {
 	 * @return RequestDto - the requested request
 	 */
 	public RequestDto getRequest(Long id) {
-		log.trace("Call service method getRequest() with params: {}", id);
 		var optionalRequest = requestRepository.findById(id);
 		var request = optionalRequest.isPresent() ? optionalRequest.get() : null;
-		log.debug("Request found: {}", id);
 		return convertToDto(request);
 	}
 
@@ -70,14 +71,16 @@ public class RequestService {
 	 *
 	 * @param requestDto - the new request
 	 */
-	public void createRequest(RequestDto requestDto) {
-		log.trace("Call service method createRequest() with params: {}", requestDto.getId());
-		if(!requestRepository.existsById(requestDto.getId())) {
-			log.debug("New request: {}", requestDto.getId());
-			requestRepository.save(convertToEntity(requestDto));
-		} else {
-			log.debug("The request already exists");
-		}
+	@Transactional
+	public void createRequest(RequestCreationDto requestCreationDto) {
+		var studentDto = studentService.getStudentByUsernameAndDni(requestCreationDto.getStudent(), null);
+		var jobOfferDto = jobOfferService.getJobOfferById(requestCreationDto.getJobOffer());
+		var requestDto = new RequestDto();
+		requestDto.setContent(requestCreationDto.getContent());
+		requestDto.setRequestStatus(requestCreationDto.getRequestStatus());
+		requestDto.setStudent(studentService.convertToEntity(studentDto));
+		requestDto.setJobOffer(jobOfferService.convertToEntity(jobOfferDto));
+		requestRepository.save(convertToEntity(requestDto));
 	}
 
 	/**
@@ -86,23 +89,19 @@ public class RequestService {
 	 * @param requestDto - request to update
 	 */
 	public void updateRequest(RequestDto requestDto) {
-		log.trace("Call service method updateRequest() with params: {}", requestDto.getId());
 		if(requestRepository.existsById(requestDto.getId())) {
-			log.debug("New request: {}", requestDto.getId());
 			requestRepository.save(convertToEntity(requestDto));
-		} else {
-			log.debug("The request does not exist");
 		}
+		log.debug("The request does not exist");
 	}
-
+	
 	/**
-	 * Deletes all provided requests
-	 *
-	 * @param requests - list of requests to delete
+	 * Deletes the request which request code has been provided as parameter
+	 * 
+	 * @param requestCode - request code to delete
 	 */
-	public void deleteRequests(List<Request> requests) {
-		log.trace("Call service method deleteRequests() with params: {}", requests.size());
-		requestRepository.deleteAllInBatch(requests);
+	public void deleteRequest(Long id) {
+		requestRepository.deleteById(id);
 	}
 
 	/**
@@ -112,8 +111,11 @@ public class RequestService {
 	 * @return RequestDto - data transfer object converted
 	 */
 	private RequestDto convertToDto(Request request) {
-		var requestDto = modelMapper.map(request, RequestDto.class);
-		return requestDto;
+		try {
+			return modelMapper.map(request, RequestDto.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 
 	/**
@@ -123,7 +125,10 @@ public class RequestService {
 	 * @return Request - entity converted
 	 */
 	private Request convertToEntity(RequestDto requestDto) {
-		var request = modelMapper.map(requestDto, Request.class);
-		return request;
+		try {
+			return modelMapper.map(requestDto, Request.class);
+		} catch(Exception e) {
+			return null;
+		}
 	}
 }

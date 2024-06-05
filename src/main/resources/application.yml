@@ -5,13 +5,14 @@ server:
 
 authentication:
   secret-key: "tA9xvUE5XLbktk6wbXRSF5ZLDUoiCdnfacYj96BFkYwG1Ufpp7LJ+bfl2d7jZEssYAm5Hq3tiF2cw3ctU5Nzwg=="
+  guest-token: "dSp8XF*guVS0kz+ip/9/lu0yEDOmpfn*fy5EPd37BX7Rou8c+Ey*-I0mtR8M"
 
 spring:
   mvc:
     pathmatch:
       matching-strategy: ant-path-matcher
   datasource:
-    url: jdbc:mariadb://localhost:3306/application_data
+    url: jdbc:mariadb://localhost:3306/application_data?useUnicode=true&characterEncoding=UTF-8&collation=utf8mb4_general_ci
     driver-class-name: org.mariadb.jdbc.Driver
     username: admin
     password: admin
