@@ -63,7 +63,7 @@ public class JobOfferController {
 			@RequestParam(defaultValue="3")int size) {
 		var pageable = PageRequest.of(page, size);
 		var jobOfferPage = jobOfferService.listAllJobOffersByCityAndModalityAndAreaAndDurationAndCompany(city,
-				modality, area, minDuration, maxDuration, companyId, name,pageable);
+				modality, area, minDuration, maxDuration, companyId, name, pageable);
 		return jobOfferPage;
 	}
 	

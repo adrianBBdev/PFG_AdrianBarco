@@ -57,7 +57,7 @@ public class JobOfferService{
 			Modality modality, String area, Integer minDuration,
 			Integer maxDuration, String companyId, String name, Pageable pageable) {
 		var jobOffers = jobOfferRepository.findByCityAndModalityAndArea_IdAndDurationAndCompany_Id(city, modality,
-				area, minDuration, maxDuration, companyId, name,pageable);
+				area, minDuration, maxDuration, companyId, name, pageable);
 		return jobOffers;
 	}
 	

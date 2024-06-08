@@ -30,15 +30,20 @@ public interface JobOfferRepository extends JpaRepository<JobOffer,Long>{
 	 * @return List - list of job offers
 	 */
 	@Query("SELECT jo FROM JobOffer jo"
-			+ " WHERE (:city IS NULL or jo.city LIKE %:city%)"
+			+ " WHERE (:companyId IS NULL or jo.company.user.username = :companyId)"
+			+ " AND (:city IS NULL or jo.city LIKE %:city%)"
 			+ " AND (:modality IS NULL or jo.modality = :modality)"
 			+ " AND (:area IS NULL or jo.area.name = :area)"
 			+ " AND (:minDuration IS NULL or month(jo.endDate)-month(jo.startDate) >= :minDuration)"
 			+ " AND (:maxDuration IS NULL or month(jo.endDate)-month(jo.startDate) <= :maxDuration)"
 			+ " AND (:name IS NULL or jo.company.name LIKE %:name%"
-			+ " OR jo.title LIKE %:name%)"
-			+ " AND (:companyId IS NULL or jo.company.user.username = :companyId)")
+			+ " OR jo.title LIKE %:name%)")
 	public Page<JobOffer> findByCityAndModalityAndArea_IdAndDurationAndCompany_Id(@Param("city") String city,
-			@Param("modality") Modality modality, @Param("area") String area, @Param("minDuration") Integer minDuration,
-			@Param("maxDuration") Integer maxDuration, @Param("companyId") String companyId, @Param("name") String name, Pageable pageable);
+			@Param("modality") Modality modality, 
+			@Param("area") String area, 
+			@Param("minDuration") Integer minDuration,
+			@Param("maxDuration") Integer maxDuration, 
+			@Param("companyId") String companyId, 
+			@Param("name") String name, 
+			Pageable pageable);
 }
